@@ -56,5 +56,36 @@ scalar list train
 scalar train_se=table[2,1]
 scalar list train_se 
 
+*Question 1.c*
+global x_1 "train"
+global x_2 "age educ black hisp"
+global x_3 "re74 re75"
 
+reg re78 $x_1
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg1
+outreg2 [reg1] using "/Users/chiaramosconi/Downloads/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
 
+reg re78 $x_1 $x_2
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg2
+outreg2 [reg2] using "/Users/chiaramosconi/Downloads/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+
+reg re78 $x_1 $x_2 $x_3
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg3
+outreg2 [reg3] using "/Users/chiaramosconi/Downloads/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+
+use "/Users/chiaramosconi/Downloads/Table_2_dta"
+export excel using "/Users/chiaramosconi/Downloads/Table_2", replace
+
+*Question 1.d*
