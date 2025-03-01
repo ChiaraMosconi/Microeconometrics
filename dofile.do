@@ -89,3 +89,17 @@ use "/Users/chiaramosconi/Downloads/Table_2_dta"
 export excel using "/Users/chiaramosconi/Downloads/Table_2", replace
 
 *Question 1.d*
+use "/Users/chiaramosconi/Downloads/files 2/jtrain2.dta", replace
+reg re78 train age educ black hisp re74 re75
+dfbeta, stub(dfbeta)
+gen influence_train=dfbeta1
+
+sort influence_train
+hist influence_train 
+
+gen rownum = _n 
+sum rownum, d
+gen rownum_opposite=446-rownum
+sum rownum_opposite, d
+drop if rownum == 3 | rownum == 5 | rownum == 10 | rownum_opposite == 3 | rownum_opposite == 5 | rownum_opposite == 10
+reg re78 train age educ black hisp re74 re75
