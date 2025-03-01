@@ -44,3 +44,4 @@ forval i = 1/`rows' {
 	putexcel (A2:A8), overwr bold border(right thick) 
 	putexcel (B1:G1), overwr bold border(bottom thick) 
 
+##BALANCED OR UNBALANCED?
