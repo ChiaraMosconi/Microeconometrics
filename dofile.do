@@ -1,6 +1,10 @@
 clear all 
 
 cd "/Users/chiaramosconi/Downloads/"
+*----------------------------------------------------------------*
+ **************************QUESTION 1************************
+*----------------------------------------------------------------*
+
 *Question 1.a*
 matrix ex_1a =(.,.,.,.,.,.)
 
@@ -101,5 +105,9 @@ gen rownum = _n
 sum rownum, d
 gen rownum_opposite=446-rownum
 sum rownum_opposite, d
-drop if rownum == 3 | rownum == 5 | rownum == 10 | rownum_opposite == 3 | rownum_opposite == 5 | rownum_opposite == 10
 reg re78 train age educ black hisp re74 re75
+reg re78 train age educ black hisp re74 re75 if rownum_opposite != 3 & rownum_opposite != 5 & rownum_opposite != 10 /*first we remove the most influential individuals*/
+reg re78 train age educ black hisp re74 re75 if rownum != 3 & rownum != 5 & rownum != 10
+/*then we remove the least influential individuals*/
+/*we remove both*/
+reg re78 train age educ black hisp re74 re75 if rownum_opposite != 3 & rownum_opposite != 5 &rownum_opposite != 10 & rownum != 3 & rownum != 5 & rownum != 10
