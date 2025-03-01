@@ -6,48 +6,60 @@ cd "/Users/chiaramosconi/Downloads/"
 *----------------------------------------------------------------*
 
 *Question 1.a*
-matrix ex_1a =(.,.,.,.,.,.)
+clear all 
+
+cd "/Users/chiaramosconi/Downloads/"
+use "/Users/chiaramosconi/Downloads/files 2/jtrain2.dta", replace
+*----------------------------------------------------------------*
+ **************************QUESTION 1************************
+*----------------------------------------------------------------*
+*Question 1.a*
+matrix balcheck=(.,.,.,.,.,.)
 
 local i=1
-
-foreach var of varlist age educ black hisp re74 re75 nodegree {
+foreach var of varlist age educ black hisp re74 re75 nodegree{
 
 	qui ttest `var', by(train) unequal 
 	
-	matrix ex_1a[`i',1]=r(mu_2)
-	matrix ex_1a[`i',2]=r(sd_2) 
-	matrix ex_1a[`i',3]=r(mu_1)
-	matrix ex_1a[`i',4]=r(sd_1) 
-	matrix ex_1a[`i',5]= r(mu_1)-r(mu_2)
-	matrix ex_1a[`i',6]=r(se) 
-	matrix list ex_1a
+	matrix balcheck[`i',1]=r(mu_2)
+	matrix balcheck[`i',2]=r(sd_2) 
+	matrix balcheck[`i',3]=r(mu_1)
+	matrix balcheck[`i',4]=r(sd_1) 
+	matrix balcheck[`i',5]= r(mu_1)-r(mu_2)
+	matrix balcheck[`i',6]=r(se) 
+	matrix list balcheck
 		local i=`i'+1
-	if `i'<=7 matrix ex_1a=(ex_1a \ .,.,.,.,.,.) 
+	if `i'<=7 matrix balcheck=(balcheck \ .,.,.,.,.,.) 
 	
 }
 
 
-matrix rownames ex_1a= "Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75" "No Degree"
-matrix colnames ex_1a= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
+matrix rownames balcheck= "Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75" "No Degree"
+matrix colnames balcheck= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
 
-local rows = rowsof(ex_1a)
-local cols = colsof(ex_1a)
 
-*Loop through each element of the matrix and round it to two decimal places
+local rows = rowsof(balcheck)
+local cols = colsof(balcheck)
+
 forval i = 1/`rows' {
     forval j = 1/`cols' {
-        matrix ex_1a[`i',`j'] = round(ex_1a[`i',`j'], 0.001)
+        matrix balcheck[`i',`j'] = round(balcheck[`i',`j'], 0.001)
     }
 }
 
 	
-	matrix list ex_1a, f(%9.3f) title("Balance check")
+	matrix list balcheck, f(%9.3f) title("Balance check")
+	cd "/Users/chiaramosconi/Downloads"
+	save balcheck.dta, replace
+	
 	
 	putexcel set "/Users/chiaramosconi/Downloads/Table_1.xlsx", replace
 	
-	putexcel A1=matrix(ex_1a), names nformat(number_d2)
+	putexcel A1=matrix(balcheck), names nformat(number_d2)
 	putexcel (A2:A8), overwr bold border(right thick) 
 	putexcel (B1:G1), overwr bold border(bottom thick) 
+
+*Three Unbalanced: Black, Hispanic and No Degree - this is not what we would expect since this is supposed to be a Randomized Experiment
 
 ##BALANCED OR UNBALANCED?
 *Question 1.b*
@@ -118,56 +130,52 @@ reg re78 train age educ black hisp re74 re75 if rownum_opposite != 3 & rownum_op
 *Question 2.a*
 use "/Users/chiaramosconi/Downloads/files 2/jtrain3.dta", replace
 
-matrix ex_1b=(.,.,.,.,.,.)
-local i=1
+matrix balcheck1=(.,.,.,.,.,.)
 
+local i=1
 foreach var of varlist age educ black hisp re74 re75 {
-	qui ttest `var', by(train) unequal
+
+	qui ttest `var', by(train) unequal 
 	
-	matrix ex_1b[`i',1]=r(mu_2)
-	matrix ex_1b[`i',2]=r(sd_2) 
-	matrix ex_1b[`i',3]=r(mu_1)
-	matrix ex_1b[`i',4]=r(sd_1) 
-	matrix ex_1b[`i',5]= r(mu_1)-r(mu_2)
-	matrix ex_1b[`i',6]=r(se) 
-	matrix list ex_1b
+	matrix balcheck1[`i',1]=r(mu_2)
+	matrix balcheck1[`i',2]=r(sd_2) 
+	matrix balcheck1[`i',3]=r(mu_1)
+	matrix balcheck1[`i',4]=r(sd_1) 
+	matrix balcheck1[`i',5]= r(mu_1)-r(mu_2)
+	matrix balcheck1[`i',6]=r(se) 
+	matrix list balcheck1
+		local i=`i'+1
+	if `i'<=7 matrix balcheck1=(balcheck1 \ .,.,.,.,.,.) 
 	
-	local i=`i'+1 
-	
-	if `i'<=7 matrix ex_1b=(ex_1b \ .,.,.,.,.,.) 
 }
 
-matrix rownames ex_1b="Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75" "No Degree"
-matrix colnames ex_1b="Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
 
-matrix list ex_1b
+matrix rownames balcheck1= "Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75"
+matrix colnames balcheck1= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
 
-local rows = rowsof(ex_1b)
-local cols = colsof(ex_1b)
 
+local rows = rowsof(balcheck1)
+local cols = colsof(balcheck1)
 
 forval i = 1/`rows' {
     forval j = 1/`cols' {
-        matrix ex_1b[`i',`j'] = round(ex_1b[`i',`j'], 0.001)
-
+        matrix balcheck1[`i',`j'] = round(balcheck1[`i',`j'], 0.001)
     }
 }
+
 	
-matrix list ex_1a ex_1b, f(%9.3f) title("Balance check")
-	
+	matrix list balcheck1, f(%9.3f) title("Balance check 1")
+	cd "/Users/chiaramosconi/Downloads/"
+	save balcheck1.dta, replace
+	use balcheck.dta, clear
+	matrix balcheck_final = balcheck, balcheck1
+	save balcheck_final, replace
+	use balcheck_final, clear
 	putexcel set "/Users/chiaramosconi/Downloads/Table_1.xlsx", replace
 	
-		putexcel A2=matrix(ex_1a), names nformat(number_d2)
-		putexcel (A3:A9), overwr bold border(right thick) 
-		putexcel (B2:G2), overwr bold 
-		
-		putexcel I2=matrix(ex_1b), colnames nformat(number_d2)
-		putexcel (I2:N2), overwr bold
-		 
-		putexcel B1 = "Table 1 - jtrain2.dta"
-		putexcel I1 = "Table 1 - jtrain3.dta"
-		putexcel B1, overwr bold 
-		putexcel I1, overwr bold 
+	putexcel A1=matrix(balcheck_final), names nformat(number_d2)
+	putexcel (A2:A8), overwr bold border(right thick) 
+	putexcel (B1:G1), overwr bold border(bottom thick) 
 
 
 *Question 2b*
