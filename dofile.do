@@ -111,3 +111,23 @@ reg re78 train age educ black hisp re74 re75 if rownum != 3 & rownum != 5 & rown
 /*then we remove the least influential individuals*/
 /*we remove both*/
 reg re78 train age educ black hisp re74 re75 if rownum_opposite != 3 & rownum_opposite != 5 &rownum_opposite != 10 & rownum != 3 & rownum != 5 & rownum != 10
+
+
+*2.A da fare -> merge dei file excel
+
+* generate empty variable to fill with 0s and 1s 
+gen treated =.
+
+* fix a seed to make realization of your random variables unique *
+* generate random numbers and order them *
+gen random=uniform() 
+set seed 12345
+sort random
+* create a rank from 1 to N based on the random_order *
+egen random_order=rank(random)
+* assign the first N/2 obs to treatment and the rest to control * 
+qui sum random
+gen N =r(N)
+replace treat=0 if random_order <=(N/2)
+replace treat=1 if random_order >(N/2) & random_order <=N
+
