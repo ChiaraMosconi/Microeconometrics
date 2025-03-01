@@ -115,11 +115,62 @@ reg re78 train age educ black hisp re74 re75 if rownum_opposite != 3 & rownum_op
 *----------------------------------------------------------------*
  **************************QUESTION 2************************
 *----------------------------------------------------------------*
-*Question 2.a DA FINIRE!!!!!!!*
+*Question 2.a*
 use "/Users/chiaramosconi/Downloads/files 2/jtrain3.dta", replace
 
-*2.A da fare -> merge dei file excel
+matrix ex_1b=(.,.,.,.,.,.)
+local i=1
 
+foreach var of varlist age educ black hisp re74 re75 {
+	qui ttest `var', by(train) unequal
+	
+	matrix ex_1b[`i',1]=r(mu_2)
+	matrix ex_1b[`i',2]=r(sd_2) 
+	matrix ex_1b[`i',3]=r(mu_1)
+	matrix ex_1b[`i',4]=r(sd_1) 
+	matrix ex_1b[`i',5]= r(mu_1)-r(mu_2)
+	matrix ex_1b[`i',6]=r(se) 
+	matrix list ex_1b
+	
+	local i=`i'+1 
+	
+	if `i'<=7 matrix ex_1b=(ex_1b \ .,.,.,.,.,.) 
+}
+
+matrix rownames ex_1b="Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75" "No Degree"
+matrix colnames ex_1b="Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
+
+matrix list ex_1b
+
+local rows = rowsof(ex_1b)
+local cols = colsof(ex_1b)
+
+
+forval i = 1/`rows' {
+    forval j = 1/`cols' {
+        matrix ex_1b[`i',`j'] = round(ex_1b[`i',`j'], 0.001)
+
+    }
+}
+	
+matrix list ex_1a ex_1b, f(%9.3f) title("Balance check")
+	
+	putexcel set "/Users/chiaramosconi/Downloads/Table_1.xlsx", replace
+	
+		putexcel A2=matrix(ex_1a), names nformat(number_d2)
+		putexcel (A3:A9), overwr bold border(right thick) 
+		putexcel (B2:G2), overwr bold 
+		
+		putexcel I2=matrix(ex_1b), colnames nformat(number_d2)
+		putexcel (I2:N2), overwr bold
+		 
+		putexcel B1 = "Table 1 - jtrain2.dta"
+		putexcel I1 = "Table 1 - jtrain3.dta"
+		putexcel B1, overwr bold 
+		putexcel I1, overwr bold 
+
+
+*Question 2b*
 * generate empty variable to fill with 0s and 1s 
 gen treated =.
 
@@ -135,4 +186,12 @@ qui sum random
 gen N =r(N)
 replace treat=0 if random_order <=(N/2)
 replace treat=1 if random_order >(N/2) & random_order <=N
+
+
+*Question 2c*
+ssc install randtreat
+randtreat, generate (treated_2) misfits(missing)
+pwcorr treated treated_2, sig 
+pwcorr treated treated_2, sig star(.05)
+*the correlation coefficient is not significant: *
 
