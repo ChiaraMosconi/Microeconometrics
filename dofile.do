@@ -1,6 +1,7 @@
 clear all 
 
 cd "/Users/chiaramosconi/Downloads/"
+*Question 1.a*
 matrix ex_1a =(.,.,.,.,.,.)
 
 local i=1
