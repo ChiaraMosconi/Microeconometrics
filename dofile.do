@@ -112,6 +112,11 @@ reg re78 train age educ black hisp re74 re75 if rownum != 3 & rownum != 5 & rown
 /*we remove both*/
 reg re78 train age educ black hisp re74 re75 if rownum_opposite != 3 & rownum_opposite != 5 &rownum_opposite != 10 & rownum != 3 & rownum != 5 & rownum != 10
 
+*----------------------------------------------------------------*
+ **************************QUESTION 2************************
+*----------------------------------------------------------------*
+*Question 2.a DA FINIRE!!!!!!!*
+use "/Users/chiaramosconi/Downloads/files 2/jtrain3.dta", replace
 
 *2.A da fare -> merge dei file excel
 
