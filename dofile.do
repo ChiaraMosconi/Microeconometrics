@@ -46,3 +46,14 @@ forval i = 1/`rows' {
 	putexcel (B1:G1), overwr bold border(bottom thick) 
 
 ##BALANCED OR UNBALANCED?
+*Question 1.b*
+reg re78 train, vce(robust)
+matrix table= r(table)
+matrix list table
+scalar train=coeffs[1,1]
+scalar list train
+*this is the treatment effect of being in the treatment group on real earnings in 1978: we interpret the coefficient as follows being assigned to the treatment group and therefore undergoing the training program increases your earnings by 1790US$*
+scalar train_se=coeffs[2,1]
+scalar list train_se 
+
+
