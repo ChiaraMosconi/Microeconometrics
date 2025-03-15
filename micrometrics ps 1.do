@@ -77,7 +77,7 @@ This suggests that controlling for these imbalanced variables in subsequent regr
 
 *--------------------------------------*
 *------------Question 1.b--------------*
-reg re78 train, vce(rob)
+reg re78 train , vce(rob)
 matrix table = r(table)
 matrix list table
 scalar train_coef = table[1,1]
@@ -100,7 +100,7 @@ global x_1 "train"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
 
-reg re78 $x_1, vce(rob)
+reg re78 $x_1 , vce(rob)
 count if train==0
 local n_ctrl = r(N)
 count if train==1
@@ -108,7 +108,7 @@ local n_trt = r(N)
 estimates store reg1
 outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (1) append dta
 
-reg re78 $x_1 $x_2, vce(rob)
+reg re78 $x_1 $x_2 , vce(rob)
 count if train==0
 local n_ctrl = r(N)
 count if train==1
@@ -116,7 +116,7 @@ local n_trt = r(N)
 estimates store reg2
 outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (2) append dta
 
-reg re78 $x_1 $x_2 $x_3, vce(rob)
+reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if train==0
 local n_ctrl = r(N)
 count if train==1
@@ -133,7 +133,7 @@ export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
 *------------Question 1.d--------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 
-reg re78 $x_1 $x_2 $x_3
+reg re78 $x_1 $x_2 $x_3 , vce(rob)
 
 /*(c) Assessing Robustness: The Impact of Adding Control Variables (TABLE 2)
 
@@ -319,13 +319,14 @@ forval i = 1/`rows' {
 
 /*(d) Balance Check with Fake Treatment Assignment
 
-Finally, we perform another balance check using the newly created randomly assigned treatment variable. The results show that, as expected, the groups are now almost perfectly balanced across all covariates. Differences in means are close to zero, and none are statistically significant.
+Finally, we perform another balance check using the newly created randomly assigned treatment variable. The results show that, as expected, the groups are now almost perfectly balanced across all covariates. Differences in means are close to zero, and none are statistically significant. 
 
-This confirms that, under proper randomization, the concerns about selection bias disappear. */
+This confirms that proper randomization has taken place and now, under adequate randomization, the concerns about selection bias disappear. As the treatment and control groups are now well balanced, any estimated treatment effects will be not/less biased by pre-existing differences between groups.
+ */
 *--------------------------------------*
 
-
-/*(e)
+*--------------------------------------*
+*------------Question 2.e--------------*
 use jtrain4.dta, clear
 global x_1 "treated"
 global x_2 "age educ black hisp"
@@ -354,8 +355,10 @@ count if treated==1
 local n_trt = r(N)
 estimates store reg3
 outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 3) append dta
+*--------------------------------------*
 
-
+*--------------------------------------*
+*------------Question 2.f--------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
 export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
 
