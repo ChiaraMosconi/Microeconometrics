@@ -287,7 +287,7 @@ local n_ctrl = r(N)
 count if treated==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 1) append dta
 
 reg re78 $x_1 $x_2
 count if treated==0
@@ -295,7 +295,7 @@ local n_ctrl = r(N)
 count if treated==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 2) append dta
 
 reg re78 $x_1 $x_2 $x_3
 count if treated==0
@@ -303,7 +303,7 @@ local n_ctrl = r(N)
 count if treated==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 3) append dta
 
 
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
@@ -321,7 +321,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 1) append dta
 
 reg re78 $x_1 $x_2
 count if train==0
@@ -329,7 +329,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 2) append dta
 
 reg re78 $x_1 $x_2 $x_3
 count if train==0
@@ -337,16 +337,26 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') append dta
+outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 3) append dta
 
 
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
 export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
 * previous earnings predict earnings in 1978
 
-/* exercise 4 d
+*exercise 4.2
+use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 
-//HC3
+ritest train _b[train]: ///
+	reg re78 train
+
+* running same test with 10,000 permutations
+ritest train _b[train], reps(10000): ///
+	reg re78 train
+
+
+* exercise 4 d
+*HC3
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 global x_1 "train"
 global x_2 "age educ black hisp"
@@ -399,7 +409,7 @@ reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(hc3)
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
 
 
-//bootstrapping
+*bootstrapping
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 global x_1 "train"
 global x_2 "age educ black hisp"
