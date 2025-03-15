@@ -133,7 +133,9 @@ export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
 *------------Question 1.d--------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 
-reg re78 $x_1 $x_2 $x_3 , vce(rob)
+reg re78 $x_1 $x_2 $x_3
+
+*technical note: we do not use vce(rob) because the option dfbeta() that we use afterwards is not allowed after robust estimation*
 
 /*(c) Assessing Robustness: The Impact of Adding Control Variables (TABLE 2)
 
@@ -332,7 +334,7 @@ global x_1 "treated"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
 
-reg re78 $x_1
+reg re78 $x_1 , vce(rob)
 count if treated==0
 local n_ctrl = r(N)
 count if treated==1
@@ -340,7 +342,7 @@ local n_trt = r(N)
 estimates store reg1
 outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 1) append dta
 
-reg re78 $x_1 $x_2
+reg re78 $x_1 $x_2 , vce(rob)
 count if treated==0
 local n_ctrl = r(N)
 count if treated==1
@@ -348,20 +350,29 @@ local n_trt = r(N)
 estimates store reg2
 outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 2) append dta
 
-reg re78 $x_1 $x_2 $x_3
+reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if treated==0
 local n_ctrl = r(N)
 count if treated==1
 local n_trt = r(N)
 estimates store reg3
 outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Randomised Treatment 3) append dta
+
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
+
+
+/* We find that the coefficient for "treated" is not significant at any level and remains not significant before and after the the introduction of the  control variables. 
+
+This lack of significance is expected because the for "treated" in question 2.b we randomly assigned half of the individuals to a fake treatment and the other half to a fake control group, however no treatment actually occurred for all those people, only 185 observations in our dataset actually went through the job training program. If we were to find a treatment effect for 1338 individuals assigned to a fake treatment group (i.e. no treatment has actually taken place) then it would be worrying and we should double check what is happening.
+
+As we add the covariates, some of them become significant and become useful in explaining the outcome variable real earnings in 1978. In particular age and education are highly significant, while black and hispanic demographic variables seem to have little explanatory power. 
+
+Interestingly, in the last specification we see how previous earnings actually have explanatoy power for earnings in 1978, something which was not observed in the jtrain2 results in question 1 */
 *--------------------------------------*
 
 *--------------------------------------*
 *------------Question 2.f--------------*
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
-
 /*(f)
 use jtrain4.dta
 global x_1 "train"
