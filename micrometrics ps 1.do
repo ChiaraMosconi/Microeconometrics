@@ -17,7 +17,8 @@ set more off
 *ssc install outreg2, replace
 cd "/Users/ariannadanese/Desktop/Micrometrics"
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
-*Question 1.a*
+*--------------------------------------*
+*------------Question 1.a--------------*
 matrix balcheck=(.,.,.,.,.,.)
 
 local i=1
@@ -72,7 +73,10 @@ The results reveal some unexpected imbalances. In particular, there is a notable
 If participation in the program was not entirely random, differences in outcomes could be partially driven by these pre-existing differences rather than the training itself.
 
 This suggests that controlling for these imbalanced variables in subsequent regression analyses will be important to isolate the effect of training from other potential confounding factors.*/
+*--------------------------------------*
 
+*--------------------------------------*
+*------------Question 1.b--------------*
 reg re78 train, vce(rob)
 matrix table = r(table)
 matrix list table
@@ -88,7 +92,10 @@ We estimate the impact of the training program on post-treatment earnings in 197
 The estimated coefficient for train is 1.79, meaning that, on average, individuals who received job training earned approximately $1,794 more in 1978 than those who did not participate. The estimate is statistically significant at the 1% level, with a p-value of 0.008, indicating strong evidence that the program had a positive effect on earnings. The standard error of the estimate is 0.67, which suggests a reasonable level of precision, and is robust to heteroskedasticity.
 
 This result aligns with economic intuition: a well-designed training program should equip participants with skills that improve their employability and earnings potential. However, given the imbalance observed in pre-treatment characteristics, it is possible that part of this estimated effect is due to differences in characteristics rather than the causal effect of training itself. To address this concern, we next include additional covariates in the regression model to see if the estimated impact of training remains stable.*/
+*--------------------------------------*
 
+*--------------------------------------*
+*------------Question 1.c--------------*
 global x_1 "train"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
@@ -120,7 +127,10 @@ outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addsta
 
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
 export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
+*--------------------------------------*
 
+*--------------------------------------*
+*------------Question 1.d--------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 
 reg re78 $x_1 $x_2 $x_3
@@ -155,10 +165,14 @@ The results indicate that, while the estimated effect of training fluctuates sli
 
 These results suggest that no single individual or small group of individuals is disproportionately driving the estimated impact of training. The findings remain robust even after removing influential cases, reinforcing the conclusion that the training program had a genuine positive effect on earnings.*/
 
+*--------------------------------------*
 
-* QUESTION 2
-
+*----------------------------------------------------------------*
+**************************---QUESTION 2---************************
+*----------------------------------------------------------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain3.dta", replace
+*--------------------------------------*
+*------------Question 2.a--------------*
 matrix balcheck1=(.,.,.,.,.,.)
 
 local i=1
@@ -208,9 +222,22 @@ forval i = 1/`rows' {
 
 /*
 (a) Balance Check in jtrain3
-We replicate the balance check procedure from jtrain2, but this time using a different dataset, jtrain3, where nodegree is not included as a covariate. The results reveal that the differences between treatment and control groups are even more pronounced than in jtrain2. The most striking imbalances appear in age, education, and pre-treatment earnings (re74 and re75). The treatment group is significantly younger, less educated, and had substantially lower earnings before the intervention.*/
-*control the pvalues!!
+We replicate the balance check procedure from jtrain2, but this time using a different dataset, jtrain3. In jtrain3, the same 185 treated individuals present in jtrain2 are used as the treatment group, while the control group is not the experimental one but a group of 2,490 men under 55 years who are not retired. Another difference is that nodegree does not appear as a covariate. 
 
+The results reveal that the differences between treatment and control groups are even more pronounced than in jtrain2. 
+
+The most striking imbalances appear in age (there is a substantial age difference of 9 years), education, and pre-treatment earnings (re74 and re75). The treatment group is significantly younger, less educated, and had substantially lower earnings before the intervention. 
+
+We now turn to the analysis of statistical significance. Since we have the difference in means and the standard error of this difference, we can compute a t-statistic:
+t=\frac{(1)-(2)}{StDev(1)-(2)}
+The thumb rule for assessing significance is that: if this ratio is higher than 1.96, then the the difference is statistically significant at the 5% level.
+All differences are statistically significant at the 5% level, except for the "Hispanic" variable.
+
+Therefore, we can conclude that the treatment and control groups in jtrain3 are not well balanced. Key variables like age, education, race, and past earnings show large and statistically significant differences, which suggests potential issues with randomization. This imbalance could introduce bias in estimating treatment effects*/
+*--------------------------------------*
+
+*--------------------------------------*
+*------------Question 2.b--------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain3.dta", replace	
 gen treated=.
     set seed 88888
@@ -221,18 +248,28 @@ gen treated=.
 	gen N =r(N)
 	replace treated=0 if random_order<=(N/2)
 	replace treated=1 if random_order>(N/2) & random_order<=N
+*--------------------------------------*
 
+*--------------------------------------*
+*------------Question 2.c--------------*
 ssc install randtreat
 randtreat, generate (treated_2) misfits(missing)
 pwcorr treated treated_2, sig 
 pwcorr treated treated_2, sig star(.05)
 
+save jtrain4
+
 /*(b) and (c) Simulating a Randomized Treatment Assignment
 
 To further explore the role of randomness in treatment assignment, we create a fake treatment variable by randomly allocating half of the sample to treatment and the other half to control. We do this twice: first by manually assigning observations to groups, and then using the randtreat command to ensure an unbiased allocation.
 
-After creating these new treatment groups, we check whether they are correlated with the original treatment variable. The correlation coefficient is only 0.015 and is not statistically significant, confirming that our simulated treatment assignment is indeed independent of the original non-random assignment.*/
+When using randtreat, we see that the assignment produces just 1 misfit (Misfits arise when the size of the sample is not a  multiple of the number of treatments to be allocated. In this case, as the number of observations is not even and we have two groups, treatment and control, there will be one observation that can't be attributed among the two groups). We decide to deal with this misfit by using the misfits(missing) option as the presence of just one misfit is not worrying. 
 
+After creating these new treatment groups, we check whether they are correlated with the original treatment variable. The correlation coefficient is small and is not statistically significant, confirming that our simulated treatment assignment is indeed independent of the original non-random assignment.*/
+*--------------------------------------*
+
+*--------------------------------------*
+*------------Question 2.d--------------*
 matrix balcheck2=(.,.,.,.,.,.)
 
 local i=1
@@ -285,6 +322,8 @@ forval i = 1/`rows' {
 Finally, we perform another balance check using the newly created randomly assigned treatment variable. The results show that, as expected, the groups are now almost perfectly balanced across all covariates. Differences in means are close to zero, and none are statistically significant.
 
 This confirms that, under proper randomization, the concerns about selection bias disappear. */
+*--------------------------------------*
+
 
 /*(e)
 use jtrain4.dta, clear
