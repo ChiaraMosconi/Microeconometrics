@@ -1,5 +1,15 @@
+*******************************
+*------- PROBLEM SET 1 -------*
+* Arianna Danese 
+* Chiara Mosconi
+* Emanuela Narduzzi
+*******************************
+clear all
+set more off
 
-* QUESTION 1
+*----------------------------------------------------------------*
+**************************---QUESTION 1---************************
+*----------------------------------------------------------------*
 
 *ssc install estout, replace
 *ssc install randomizr, replace
@@ -7,6 +17,7 @@
 *ssc install outreg2, replace
 cd "/Users/ariannadanese/Desktop/Micrometrics"
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+*Question 1.a*
 matrix balcheck=(.,.,.,.,.,.)
 
 local i=1
