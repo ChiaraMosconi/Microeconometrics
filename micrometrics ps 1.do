@@ -422,12 +422,79 @@ These results and the differences between the jtrain2 results and the new result
 *----------------------------------------------------------------*
 *--------------------------------------*
 *------------Question 3.a--------------*
+ssc install lassopack
+use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 
+rlasso re78 age educ black hisp re74 re75
+
+display e(selected)
+display e(lambda)
+ereturn list
+
+*The default rlasso procedure heavily penalizes the independent variables and ends up selecting only the constant. This excessive penalization prevents us from running the subsequent OLS regression because the model lacks sufficient predictors. Given the issue, we have two main routes to proceed: (1) manually adjust the rlasso parameters by fine-tuning penalty settings to avoid over-shrinking the predictors (2) switch to a linear lasso regression (using 'lasso linear' instead of the data-driven 'rlasso')
+
+** FIRST METHOD: Fine-tuning the rlasso parameters
+* Initially, the default rlasso excessively penalized our predictors, leaving only the constant in the model. To address this, after an ispection of the 'rlasso' documentation, we made several adjustments. First of all, we decided to remove the constant: using the 'noconstant' option to prevent the constant from absorbing too much of the penalty. Additionally, we standardized the data through the 'prestd' option, ensuring that all variables were on the same scale. Since penalization was too heavy, we adjusted the penalty structure, indeed, by adding lalternative (which changes the lambda function's form) and setting gamma(0.05), we moderated the penalty's aggressiveness. We tuned the penalty strength in a consistent way between the first iteration and the subsequent ones, lowering both c and c0 from the default 1.1 to 0.9. Lastly, we ensured the control for heteroskedastic errors. Comparing both the fully tuned and simplified versions confirmed that the over-penalization was primarily driven by the constant. With these adjustments, the model now appropriately selects age and education as significant predictors of real earnings in 1978.
+
+rlasso re78 age educ black hisp re74 re75, noconstant robust prestd lassopsi lalternative gamma(0.05) c(0.9) c0(0.9) supscore seed(12345)  displayallpostall ols verbose vverbose
+
+rlasso re78 age educ black hisp re74 re75, sqrt noconstant robust prestd lassopsi lalternative gamma(0.05) c(0.9) c0(0.9) supscore seed(12345)  displayall postall ols verbose vverbose
+rlasso re78 age educ black hisp re74 re75, noconstant robust prestd lassopsi supscore seed(12345)  displayall postall ols verbose vverbose
+
+rlasso re78 age educ black hisp re74 re75, sqrt noconstant robust prestd lassopsi lalternative gamma(0.05) c(0.9) c0(0.9) supscore seed(12345)  displayall postall ols verbose vverbose
+
+rlasso re78 age educ black hisp re74 re75, noconstant 
+
+** SECOND METHOD: Using lasso linear
+lasso linear re78 age educ black hisp re74 re75
+lassocoef
+
+**Lasso linear without fine tuning is too 'gentle' and does not shrink any coefficient to 0. Therefore, we use the variables selected by the rlasso after removing the constant and we perform an OLS regression of re78 on the treatment status, age, and education level.
+
+reg re78 train age educ
+
+**FINAL COMMENT: From the results, it appears that in this OLS regression only the treatment status and education are significant at 5% level. However, this result should be interpreted with caution as the variables were selected through a data-driven approach by the lasso regularization procedure. Traditional OLS inference (such as t-tests and p-values) assumes that the model is specified correctly, and all variables are fixed in advance. Since Lasso selects the variables based on the data, this violates the assumption of fixed predictors in the OLS regression, making the standard errors, p-values, and confidence intervals potentially misleading.
 *--------------------------------------*
 
 *--------------------------------------*
 *------------Question 3.b--------------*
+*------------Question 3.b1--------------*
+ssc install pystacked
+ssc install pdslasso
+ssc install ivreg2
+ssc install ranktest
+pdslasso re78 train (age educ black hisp re74 re75)
+rlasso train age educ black hisp re74 re75
+rlasso re78 age educ black hisp re74 re75
 
+**COMMENT
+*The results confirm a similar penalization to the one we analyzed in point 3a. In fact, also in this case, through the automatic double selection procedure, the constant is attributed all the explanatory power, and all variables are excluded from the model in both parts of the double selection (for re78 and train). This selection is surprising and might indicate that the Lasso procedure did not find any significant relationship between the predictors and the outcome or treatment. This could be due to high regularization (which can shrink all coefficients) or other factors, such as multicollinearity or weak relationships between the predictors and the outcome. As for the manual double selection procedure through 'rlasso', we cansee that in both regressions (train and re78), only the constant is selected, which means that the Lasso procedure did not select any of the predictors as important for explaining either train or re78. Consequently, in the final OLS regression, only the variable 'train' is included, and its coefficient is 1.794343. This suggests that, based on the double selection procedure, the effect of train on re78 is significant. However, since no other variables were selected, the model does not control for any other covariates like age, educ, or black, etc.
+
+*------------Question 3.b2--------------*
+sum age, detail
+
+levelsof age, local(agevals) // Get unique values of age
+foreach a of local agevals {
+    gen age_`a' = (age == `a')
+}
+
+sum educ, detail
+
+levelsof educ, local(educvals) // Get unique values of age
+foreach e of local educvals {
+    gen educ_`e' = (educ == `e')
+}
+
+pdslasso re78 train (black hisp re74 re75 i.age_* i.educ_*)
+
+rlasso train black hisp re74 re75 i.age_* i.educ_*
+
+rlasso re78 black hisp re74 re75 i.age_* i.educ_*
+
+reg re78 train educ_14
+
+**COMMENT
+*With respect to the Lasso regularization performed in point 3a, this double selection procedures ensures a more accurate shrinkage, which leads to a lower bias in the OLS results. The main difference is that the double selection does not consider 'age' as a predictor of the outcome variable, however, we should look at these results carefully. In both pdslasso and rlasso, the variable i.educ_14 is selected for predicting re78. No other predictors (like age, black, hisp, re74, re75) were selected in pdslasso and rlasso for the outcome variable, which is impacted only by the constant, educ_14, and the treatment status. To improve the analysis and achieve better results, it might be asvisable to fine-tune parameters or remove the constant, as the excessive shrinkage and selection of just one category for the years of education indicate. Lastly, as for 'train', both pdslasso and rlasso do not find any significant predictor, this may indicate that the treatment and control groups are balanced in terms of age, education, ethnicity and earnings.
 *--------------------------------------*
 
 
