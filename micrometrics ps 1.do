@@ -373,13 +373,12 @@ Interestingly, in the last specification we see how previous earnings actually h
 
 *--------------------------------------*
 *------------Question 2.f--------------*
-/*(f)
 use jtrain4.dta
 global x_1 "train"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
 
-reg re78 $x_1
+reg re78 $x_1 , vce(rob)
 count if train==0
 local n_ctrl = r(N)
 count if train==1
@@ -387,7 +386,7 @@ local n_trt = r(N)
 estimates store reg1
 outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 1) append dta
 
-reg re78 $x_1 $x_2
+reg re78 $x_1 $x_2 , vce(rob)
 count if train==0
 local n_ctrl = r(N)
 count if train==1
@@ -395,7 +394,7 @@ local n_trt = r(N)
 estimates store reg2
 outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 2) append dta
 
-reg re78 $x_1 $x_2 $x_3
+reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if train==0
 local n_ctrl = r(N)
 count if train==1
@@ -403,13 +402,50 @@ local n_trt = r(N)
 estimates store reg3
 outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 3) append dta
 
-
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
 export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
-* previous earnings predict earnings in 1978
+/*We observe a strong treatment effect when we run the first regression, that is when we regress earnings in 78 on the actual treatment variable (train) which indicates whether the individual actually participated in the NSW training group. The treatment effect is highly significant, just like the one observed in columns (1) however it is of much bigger magnitude and of different sign: in column (1) the treatment effect is small and positive while the coefficient in column (7) suggests that participating in the NSW training program had a large and negative effect on real earnings in 1978.
 
-*exercise 4.2
+By adding the first set of demographic controls, that is the variables age educ black hisp, we see that the magnitude of the train coefficient diminishes. All the controls added, except for hispanic, have a significant power in explaining the outcome variable. We find the same negative and significant effect of being african-american on earnings and the same positive effect of education of earnings. Age, on the other hand, has explanatory power only when considering the dataset made of 2,675 individuals.
+
+Finally, moving onto the last specification, where we include also previous earnings in our regression, we see how all the explanatory power of the treatment allocation vanishes as the coefficient becomes extemely small and absolutely not significant. 
+The coefficients on the demographic controls diminish as well and (a) in the case of age it changes sign, (b) in the case of black, it loses significance and (c) in the case of hispanic, it gains a significance star, becoming therefore significant at the 90% level.
+
+The coefficients on earnings in 1974 and 1975 are highly significant and positive. They seem to suggest that previous earnings have great explanatory power when it comes to predicting earnings in 1978
+
+These results and the differences between the jtrain2 results and the new results are not unexpected: the jtrain2 dataset reports results of an experimental setting, whereas the jtrain3 dataset contrasts the 185 individuals on the NSW program with 2490 individuals who are not the experimental control group.
+*/
+*--------------------------------------*
+
+*----------------------------------------------------------------*
+**************************---QUESTION 3---************************
+*----------------------------------------------------------------*
+*--------------------------------------*
+*------------Question 3.a--------------*
+
+*--------------------------------------*
+
+*--------------------------------------*
+*------------Question 3.b--------------*
+
+*--------------------------------------*
+
+
+*----------------------------------------------------------------*
+**************************---QUESTION 4---************************
+*----------------------------------------------------------------*
+*--------------------------------------*
+*------------Question 4.a--------------*
+*guardare sezione 4.2*
+
+*--------------------------------------*
+
+*--------------------------------------*
+*------------Question 4.b--------------*
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+*tabstat re78, by(train) stats(mean sd)
+*reg re78 train
+*ssc install ritest
 
 ritest train _b[train]: ///
 	reg re78 train
@@ -418,8 +454,16 @@ ritest train _b[train]: ///
 ritest train _b[train], reps(10000): ///
 	reg re78 train
 
+*--------------------------------------*
+*------------Question 4.c--------------*
 
-* exercise 4 d
+*--------------------------------------*
+
+*--------------------------------------*
+*------------Question 4.d--------------*
+**--SUBPOINT 1--**
+
+**--SUBPOINT 2--**
 *HC3
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 global x_1 "train"
@@ -472,6 +516,7 @@ reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(hc3)
 *Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
 
+**--SUBPOINT 3--**
 
 *bootstrapping
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
@@ -524,4 +569,8 @@ gen row_num = _n
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(bootstrap)
 *Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(bootstrap)
+
+**--SUBPOINT 4--**
+
+*--------------------------------------*
 
