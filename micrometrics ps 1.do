@@ -538,7 +538,8 @@ ritest train _b[train]/_se[train], reps(2000): ///
 
 *--------------------------------------*
 *------------Question 4.c--------------*
-
+*In LaLonde (1986), the randomization procedure for the NSW program was designed so that eligible  applicants were designed to treatment and control groups randomly. However, this randomization happened at the city level, as the program was implemented across ten different sites in the United States. These sites may differ from each other along some socio-economic variables. Moreover, each site operated independently, and while the sites followed the overall goal of the program, the type of work experiences and work environments they provided varied across and within cities.
+*Athey and Imbens (2017) seek to apply Fisherian inference to the NSW data: they want to test the sharp null hypothesis that the treatment had no effect. They reassign the treatment randomly across the sample, while keeping the total number of treated and control units at 185 and 240 respectively. However, they ignore the randomization at the city level that happened when the NSW program was taking place.  Furthermore, LaLonde (1986) explicitly states that treatment experiences varied both across and within sites, meaning that treatment effects may not have been exactly homogeneous, which goes against the assumptions necessary for Fisher’s sharp null hypothesis. Both of these oversights could lead to potential bias in the measurement of treatment effects and the calculation of p-values.
 *--------------------------------------*
 
 *--------------------------------------*
