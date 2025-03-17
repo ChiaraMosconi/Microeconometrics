@@ -307,7 +307,7 @@ randtreat, generate (treated_2) misfits(missing)
 pwcorr treated treated_2, sig 
 pwcorr treated treated_2, sig star(.05)
 
-save jtrain4
+save jtrain4, replace
 
 /*(b) and (c) Simulating a Randomized Treatment Assignment
 
