@@ -589,9 +589,20 @@ forval i = 1/`rows' {
 	putexcel A1=matrix(balcheck), names nformat(number_d2)
 	putexcel (A2:A15), overwr bold border(right thick) 
 	putexcel (B1:H1), overwr bold border(bottom thick) 
-
+*the balance table reveals that the only significant differences are found at the education 10 and edcuation 12 level*
 **COMMENT
 *With respect to the Lasso regularization performed in point 3a, this double selection procedures ensures a more accurate shrinkage, which leads to a lower bias in the OLS results. The main difference is that the double selection does not consider 'age' as a predictor of the outcome variable, however, we should look at these results carefully. In both pdslasso and rlasso, the variable i.educ_14 is selected for predicting re78. No other predictors (like age, black, hisp, re74, re75) were selected in pdslasso and rlasso for the outcome variable, which is impacted only by the constant, educ_14, and the treatment status. To improve the analysis and achieve better results, it might be advisable to fine-tune parameters or remove the constant, as the excessive shrinkage and selection of just one category for the years of education indicate. Lastly, as for 'train', both pdslasso and rlasso do not find any significant predictors, this may indicate that the treatment and control groups are balanced in terms of age, education, ethnicity and earnings.
+*we now do the same analysis but with robust s.e. *
+pdslasso re78 train (black hisp re74 re75 i.age_* i.educ_*), robust
+
+rlasso train black hisp re74 re75 i.age_* i.educ_*, robust
+
+rlasso re78 black hisp re74 re75 i.age_* i.educ_*, robust
+
+*the variables selected are age_34 and age_46.*
+*we do the balance check for the age dummies*
+
+reg re78 train 
 *--------------------------------------*
 
 
