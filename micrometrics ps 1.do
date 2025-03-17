@@ -15,8 +15,31 @@ set more off
 *ssc install randomizr, replace
 *ssc install ritest, replace
 *ssc install outreg2, replace
-cd "/Users/ariannadanese/Desktop/Micrometrics"
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+
+/* Gets user name */
+local user = c(username)
+display "`user'"
+
+/* Stores filepath conditionally */
+if ("`user'" == "erick") {
+    global filepath "/home/erick/TEMP/"
+}
+
+if ("`user'" == "A") {
+    global filepath "/FILE/PATH/A/"
+}
+
+if ("`user'" == "B") {
+    global filepath "/FILE/PATH/B/"
+}
+
+if ("`user'" == "C") {
+    global filepath "/FILE/PATH/C/"
+
+// Set directory
+cd "$filepath"
+
+use jtrain2.dta, replace
 *--------------------------------------*
 *------------Question 1.a--------------*
 matrix balcheck=(.,.,.,.,.,.)
