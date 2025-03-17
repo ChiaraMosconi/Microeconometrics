@@ -201,7 +201,7 @@ reg re78 $x_1 $x_2 $x_3, vce(robust)
 outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 10) append dta
 restore
 
-use ""$filepath/Table_3_dta", replace
+use "$filepath/Table_3_dta", replace
 export excel using "$filepath/Table_3", replace
 
 
