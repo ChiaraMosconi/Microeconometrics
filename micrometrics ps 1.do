@@ -609,6 +609,12 @@ rlasso re78 black hisp re74 re75 i.age_* i.educ_*, robust
 
 *the variables selected are age_34 and age_46.*
 
+reg re78 train  age_34 age_46
+*age-46 coefficient is extremely significant *
+
+pwcorr train age_34 age_46, star(0.05)
+*we find that the correlation between train and age_34 and the correlation between train and age_46 is significant at the 5% level*
+
 *we do the balance check for the age dummies*
 
 matrix balcheck=(.,.,.,.,.,.,.)
@@ -655,11 +661,8 @@ forval i = 1/`rows' {
 	putexcel A1=matrix(balcheck), names nformat(number_d2)
 	putexcel (A2:A15), overwr bold border(right thick) 
 	putexcel (B1:H1), overwr bold border(bottom thick) 
-*we find that both age_34 and age_46 are not balanced. However we have to note that the observations for age_34 amount to a total of 6 and for age_46 they amount to a total of 3. Therefore the signicance levels could be drive by the very small number of observations. Therefore any result from these lasso analysis should be interpreted with extreme caution*
-pwcorr train age_34 age_46, star(0.05)
-*we find that the correlation between train and age_34 and the correlation between train and age_46 is significant at the 5% level*
 
-reg re78 train  age_34 age_46
+*we find that both age_34 and age_46 are not balanced. However we have to note that the observations for age_34 amount to a total of 6 and for age_46 they amount to a total of 3. Therefore the signicance levels could be drive by the very small number of observations. Therefore any result from these lasso analysis should be interpreted with extreme caution*
 *--------------------------------------*
 
 
