@@ -106,7 +106,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (1) append dta
+outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 1) append dta
 
 reg re78 $x_1 $x_2 , vce(rob)
 count if train==0
@@ -114,7 +114,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (2) append dta
+outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 2) append dta
 
 reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if train==0
@@ -122,7 +122,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (3) append dta
+outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 3) append dta
 
 
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
@@ -150,6 +150,8 @@ dfbeta, stub(dfbeta)
 gen influence_train = dfbeta1
 
 sort(influence_train)
+
+
 *First we remove the most influential individuals (the ones in which the influence of training was the highest)
 gen row_num_opposite = 446 - _n
 reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(rob)
@@ -158,6 +160,31 @@ gen row_num = _n
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(rob)
 *Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(rob)
+
+
+*alternative method
+
+preserve
+keep if _n < _N - 3  & _n > 2
+reg re78 $x_1 $x_2 $x_3, vce(robust)  
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", ctitle (Removing highest and lowest 3) replace dta
+restore 
+
+preserve
+keep if _n < _N - 5  & _n > 4
+reg re78 $x_1 $x_2 $x_3, vce(robust)   
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", ctitle (Removing highest and lowest 5) append dta
+restore
+
+preserve
+keep if _n < _N - 10  & _n > 9
+reg re78 $x_1 $x_2 $x_3, vce(robust) 
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", ctitle (Removing highest and lowest 10) append dta
+restore
+
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_3_dta", replace
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", replace
+
 
 /*(d) Sensitivity Analysis: Influence of Outliers on the Training Effect
 
@@ -547,6 +574,72 @@ ritest train _b[train]/_se[train], reps(2000): ///
 **--SUBPOINT 1--**
 
 **--SUBPOINT 2--**
+*HC1
+use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+global x_1 "train"
+global x_2 "age educ black hisp"
+global x_3 "re74 re75"
+
+reg re78 $x_1 , vce(rob)
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg1
+outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 1) append dta
+
+reg re78 $x_1 $x_2 , vce(rob)
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg2
+outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 2) append dta
+
+reg re78 $x_1 $x_2 $x_3 , vce(rob)
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg3
+outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 3) append dta
+
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_4_dta"
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", replace
+
+
+use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+
+reg re78 $x_1 $x_2 $x_3
+
+dfbeta, stub(dfbeta)
+
+gen influence_train = dfbeta1
+
+sort(influence_train)
+
+preserve
+keep if _n < _N - 3  & _n > 2
+reg re78 $x_1 $x_2 $x_3, vce(robust)  
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC1 Removing highest and lowest 3) replace dta
+restore 
+
+preserve
+keep if _n < _N - 5  & _n > 4
+reg re78 $x_1 $x_2 $x_3, vce(robust)   
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC1 Removing highest and lowest 5) append dta
+restore
+
+preserve
+keep if _n < _N - 10  & _n > 9
+reg re78 $x_1 $x_2 $x_3, vce(robust) 
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC1 Removing highest and lowest 10) append dta
+restore
+
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta", replace
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
+
+
 *HC3
 use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
 global x_1 "train"
@@ -577,6 +670,85 @@ local n_trt = r(N)
 estimates store reg3
 outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 3) append dta
 
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_4_dta"
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", replace
+
+
+use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+
+reg re78 $x_1 $x_2 $x_3
+
+dfbeta, stub(dfbeta)
+
+gen influence_train = dfbeta1
+
+sort(influence_train)
+
+*First we remove the most influential individuals (the ones in which the influence of training was the highest)
+gen row_num_opposite = 446 - _n
+reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
+*Then we remove the least influential individuals (the ones in which the influence of training was the lowest)
+gen row_num = _n
+reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(hc3)
+*Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
+reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
+
+*alternative method
+preserve
+keep if _n < _N - 3  & _n > 2
+reg re78 $x_1 $x_2 $x_3, vce(hc3)  
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC3 Removing highest and lowest 3) replace dta
+restore 
+
+preserve
+keep if _n < _N - 5  & _n > 4
+reg re78 $x_1 $x_2 $x_3, vce(hc3)   
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC3 Removing highest and lowest 5) append dta
+restore
+
+preserve
+keep if _n < _N - 10  & _n > 9
+reg re78 $x_1 $x_2 $x_3, vce(hc3) 
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC3 Removing highest and lowest 10) append dta
+restore
+
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta", replace
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
+
+
+
+**--SUBPOINT 3--**
+
+*bootstrapping
+use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+global x_1 "train"
+global x_2 "age educ black hisp"
+global x_3 "re74 re75"
+
+reg re78 $x_1, vce(bootstrap, reps(1000))
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg1
+outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 1) append dta
+
+reg re78 $x_1 $x_2, vce(bootstrap, reps(1000))
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg2
+outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 2) append dta
+
+reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))
+count if train==0
+local n_ctrl = r(N)
+count if train==1
+local n_trt = r(N)
+estimates store reg3
+outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') (SE bootstrap 3) append dta
+
 
 use "/Users/ariannadanese/Desktop/Micrometrics/Table_4_dta"
 export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", replace
@@ -590,60 +762,8 @@ dfbeta, stub(dfbeta)
 gen influence_train = dfbeta1
 
 sort(influence_train)
-*First we remove the most influential individuals (the ones in which the influence of training was the highest)
-gen row_num_opposite = 446 - _n
-reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
-*Then we remove the least influential individuals (the ones in which the influence of training was the lowest)
-gen row_num = _n
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(hc3)
-*Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
-
-**--SUBPOINT 3--**
-
-*bootstrapping
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
-global x_1 "train"
-global x_2 "age educ black hisp"
-global x_3 "re74 re75"
-
-reg re78 $x_1, vce(bootstrap)
-count if train==0
-local n_ctrl = r(N)
-count if train==1
-local n_trt = r(N)
-estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 1) append dta
-
-reg re78 $x_1 $x_2, vce(bootstrap)
-count if train==0
-local n_ctrl = r(N)
-count if train==1
-local n_trt = r(N)
-estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 2) append dta
-
-reg re78 $x_1 $x_2 $x_3, vce(bootstrap)
-count if train==0
-local n_ctrl = r(N)
-count if train==1
-local n_trt = r(N)
-estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') (SE bootstrap 3) append dta
 
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
-
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
-
-reg re78 $x_1 $x_2 $x_3
-
-dfbeta, stub(dfbeta)
-
-gen influence_train = dfbeta1
-
-sort(influence_train)
 *First we remove the most influential individuals (the ones in which the influence of training was the highest)
 gen row_num_opposite = 446 - _n
 reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(bootstrap)
@@ -652,6 +772,32 @@ gen row_num = _n
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(bootstrap)
 *Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
 reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(bootstrap)
+
+*alternative method
+
+preserve
+keep if _n < _N - 3  & _n > 2
+reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))  
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 3) replace dta
+restore 
+
+preserve
+keep if _n < _N - 5  & _n > 4
+reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))   
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 5) append dta
+restore
+
+preserve
+keep if _n < _N - 10  & _n > 9
+reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000)) 
+outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 10) append dta
+restore
+
+use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta", replace
+export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
+
+
+
 
 **--SUBPOINT 4--**
 
