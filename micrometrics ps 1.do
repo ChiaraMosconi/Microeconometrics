@@ -1,8 +1,8 @@
 *******************************
 *------- PROBLEM SET 1 -------*
-* Arianna Danese 
-* Chiara Mosconi
-* Emanuela Narduzzi
+* Arianna Danese - 
+* Chiara Mosconi - 3158558
+* Emanuela Narduzzi - 
 *******************************
 clear all
 set more off
