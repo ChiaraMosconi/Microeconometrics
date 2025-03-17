@@ -205,7 +205,7 @@ use ""$filepath/Table_3_dta", replace
 export excel using ""$filepath/Table_3", replace
 
 
-/*(d) Sensitivity Analysis: Influence of Outliers on the Training Effect
+/*(d) Sensitivity Analysis: Influence of Outliers on the Training Effect*/
 
 One concern in regression analysis is whether the estimated coefficients are being disproportionately driven by a small number of highly influential observations. To investigate this, we calculate DFBETAs for train, which measure how much the estimated coefficient changes when each individual observation is removed from the dataset. We then identify the three,the five and the ten most influential observations—both the largest positive and negative influences—and re-run the regression excluding these cases.
 
