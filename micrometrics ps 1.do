@@ -207,11 +207,11 @@ export excel using ""$filepath/Table_3", replace
 
 /*(d) Sensitivity Analysis: Influence of Outliers on the Training Effect
 
-One concern in regression analysis is whether the estimated coefficients are being disproportionately driven by a small number of highly influential observations. To investigate this, we calculate DFBETAs for train, which measure how much the estimated coefficient changes when each individual observation is removed from the dataset. We then identify the third, fifth, and tenth most influential observations—both the largest positive and negative influences—and re-run the regression excluding these cases.
+One concern in regression analysis is whether the estimated coefficients are being disproportionately driven by a small number of highly influential observations. To investigate this, we calculate DFBETAs for train, which measure how much the estimated coefficient changes when each individual observation is removed from the dataset. We then identify the three,the five and the ten most influential observations—both the largest positive and negative influences—and re-run the regression excluding these cases.
 
-The results indicate that, while the estimated effect of training fluctuates slightly, it remains positive and statistically significant in all cases. When the most influential observations are removed, the coefficient drops slightly to 1.36, but when the least influential observations are removed, it increases to 1.85. Finally, when both sets of extreme observations are excluded, the estimate stabilizes around 1.53, still significantly different from zero.
+The results indicate that, while the estimated effect of training fluctuates slightly, it remains positive and statistically significant in all cases. When the most influential observations (the three largest and the three smallest) are removed, the coefficient drops slightly to 1.156 and remains significant at 95% confidence level. The coefficient goes down again when we remove 10 observations but remains significant, while if we remove 20 observations it drops again to 0.889, which is only significant at the 90% level. 
 
-These results suggest that no single individual or small group of individuals is disproportionately driving the estimated impact of training. The findings remain robust even after removing influential cases, reinforcing the conclusion that the training program had a genuine positive effect on earnings.*/
+These results suggest that no single individual or small group of individuals is disproportionately driving the estimated impact of training. Even though the coefficient decreases, the effect remains robust even after removing influential cases, reinforcing the conclusion that the training program had a genuine positive effect on earnings.*/
 
 *--------------------------------------*
 
