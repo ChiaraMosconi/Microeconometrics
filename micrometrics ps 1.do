@@ -77,11 +77,11 @@ forval i = 1/`rows' {
 
 	
 	matrix list balcheck, f(%9.3f) title("Balance check")
-	cd "/Users/ariannadanese/Desktop/Micrometrics/"
+	cd "$filepath"
 	save balcheck.dta, replace
 	
 	
-	putexcel set "/Users/ariannadanese/Desktop/Micrometrics/Table_1.xlsx", replace
+	putexcel set "$filepath/Table_1.xlsx", replace
 	
 	putexcel A1=matrix(balcheck), names nformat(number_d2)
 	putexcel (A2:A8), overwr bold border(right thick) 
