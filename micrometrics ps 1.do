@@ -611,7 +611,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 1) replace dta
+outreg2 [reg1] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 1) replace dta
 
 reg re78 $x_1 $x_2 , vce(rob)
 count if train==0
@@ -619,7 +619,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 2) append dta
+outreg2 [reg2] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 2) append dta
 
 reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if train==0
@@ -627,13 +627,13 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 3) append dta
+outreg2 [reg3] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc1 3) append dta
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_4_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", replace
+use "$filepath/Table_4_dta"
+export excel using "$filepath/Table_4", replace
 
 
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 
 reg re78 $x_1 $x_2 $x_3
 
@@ -646,27 +646,27 @@ sort(influence_train)
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(robust)  
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC1 Removing highest and lowest 3) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC1 Removing highest and lowest 3) append dta
 restore 
 
 preserve
 keep if _n < _N - 5  & _n > 4
 reg re78 $x_1 $x_2 $x_3, vce(robust)   
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC1 Removing highest and lowest 5) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC1 Removing highest and lowest 5) append dta
 restore
 
 preserve
 keep if _n < _N - 10  & _n > 9
 reg re78 $x_1 $x_2 $x_3, vce(robust) 
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC1 Removing highest and lowest 10) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC1 Removing highest and lowest 10) append dta
 restore
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta", replace
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
+use "$filepath/Table_5_dta", replace
+export excel using "$filepath/Table_5", replace
 
 
 *HC3
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 global x_1 "train"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
@@ -677,7 +677,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 1) append dta
+outreg2 [reg1] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 1) append dta
 
 reg re78 $x_1 $x_2, vce(hc3)
 count if train==0
@@ -685,7 +685,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 2) append dta
+outreg2 [reg2] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 2) append dta
 
 reg re78 $x_1 $x_2 $x_3, vce(hc3)
 count if train==0
@@ -693,13 +693,13 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 3) append dta
+outreg2 [reg3] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE hc3 3) append dta
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_4_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", replace
+use "$filepath/Table_4_dta"
+export excel using "$filepath/Table_4", replace
 
 
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 
 reg re78 $x_1 $x_2 $x_3
 
@@ -722,23 +722,23 @@ reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(hc3)  
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC3 Removing highest and lowest 3) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC3 Removing highest and lowest 3) append dta
 restore 
 
 preserve
 keep if _n < _N - 5  & _n > 4
 reg re78 $x_1 $x_2 $x_3, vce(hc3)   
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC3 Removing highest and lowest 5) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC3 Removing highest and lowest 5) append dta
 restore
 
 preserve
 keep if _n < _N - 10  & _n > 9
 reg re78 $x_1 $x_2 $x_3, vce(hc3) 
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (HC3 Removing highest and lowest 10) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC3 Removing highest and lowest 10) append dta
 restore
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta", replace
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
+use "$filepath/Table_5_dta", replace
+export excel using "$filepath/Table_5", replace
 
 
 
@@ -760,7 +760,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 1) append dta
+outreg2 [reg1] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 1) append dta
 
 reg re78 $x_1 $x_2, vce(bootstrap, reps(1000))
 count if train==0
