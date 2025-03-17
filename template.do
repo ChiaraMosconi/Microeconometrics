@@ -1,5 +1,5 @@
 /* Template of do-file in Stata to answer problem set */
-/* Group number: */
+/* Group number: 3/
 /* Group composition: A, B and C */
 
 /* Gets user name */
