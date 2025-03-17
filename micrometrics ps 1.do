@@ -134,7 +134,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 1) replace dta
+outreg2 [reg1] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 1) replace dta
 
 reg re78 $x_1 $x_2 , vce(rob)
 count if train==0
@@ -142,7 +142,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 2) append dta
+outreg2 [reg2] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 2) append dta
 
 reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if train==0
@@ -150,11 +150,11 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 3) append dta
+outreg2 [reg3] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (reg 3) append dta
 
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
+use "$filepath/Table_2_dta"
+export excel using "$filepath/Table_2", replace
 *--------------------------------------*
 
 *--------------------------------------*
