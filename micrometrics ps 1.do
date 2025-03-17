@@ -191,14 +191,14 @@ restore
 preserve
 keep if _n < _N - 5  & _n > 4
 reg re78 $x_1 $x_2 $x_3, vce(robust)   
-outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 5) append dta
+outreg2 using "$filepath/Table_3", ctitle (Removing highest and lowest 5) append dta
 restore
 
 *We remove the 10 highest and 10 lowest observations 
 preserve
 keep if _n < _N - 10  & _n > 9
 reg re78 $x_1 $x_2 $x_3, vce(robust) 
-outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 10) append dta
+outreg2 using "$filepath/Table_3", ctitle (Removing highest and lowest 10) append dta
 restore
 
 use "$filepath/Table_3_dta", replace
