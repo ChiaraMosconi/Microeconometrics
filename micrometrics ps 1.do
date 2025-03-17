@@ -155,6 +155,15 @@ outreg2 [reg3] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Num
 
 use "$filepath/Table_2_dta"
 export excel using "$filepath/Table_2", replace
+
+/*(c) Assessing Robustness: The Impact of Adding Control Variables (TABLE 2)
+
+To determine whether our initial estimate is sensitive to omitted variable bias, we extend the regression model by sequentially adding control variables. The first regression includes only train as an explanatory variable. In the second specification, we add age, education, Black, and Hispanic as additional controls to account for demographic differences. Finally, in the third specification, we also include re74 and re75 to control for prior earnings history.
+
+The results show that the estimated effect of training remains relatively stable across all three models. Initially, the coefficient on train is 1.79, but after adding demographic controls, it decreases slightly to 1.69, and when pre-treatment earnings are included, it remains at 1.68. The statistical significance is maintained throughout, with p-values consistently below 0.01. This suggests that, while some selection bias may be present, it does not appear to be driving the estimated effect.
+
+An interesting finding is that education has a positive and statistically significant impact on earnings, meaning that higher levels of education are associated with increased earnings, independent of training. Conversely, being Black has a negative coefficient, which, although not always statistically significant, suggests the presence of racial disparities in earnings.*/
+
 *--------------------------------------*
 
 *--------------------------------------*
@@ -164,14 +173,6 @@ use "$filepath/jtrain2.dta", replace
 reg re78 $x_1 $x_2 $x_3
 
 *technical note: we do not use vce(rob) because the option dfbeta() that we use afterwards is not allowed after robust estimation*
-
-/*(c) Assessing Robustness: The Impact of Adding Control Variables (TABLE 2)
-
-To determine whether our initial estimate is sensitive to omitted variable bias, we extend the regression model by sequentially adding control variables. The first regression includes only train as an explanatory variable. In the second specification, we add age, education, Black, and Hispanic as additional controls to account for demographic differences. Finally, in the third specification, we also include re74 and re75 to control for prior earnings history.
-
-The results show that the estimated effect of training remains relatively stable across all three models. Initially, the coefficient on train is 1.79, but after adding demographic controls, it decreases slightly to 1.69, and when pre-treatment earnings are included, it remains at 1.68. The statistical significance is maintained throughout, with p-values consistently below 0.01. This suggests that, while some selection bias may be present, it does not appear to be driving the estimated effect.
-
-An interesting finding is that education has a positive and statistically significant impact on earnings, meaning that higher levels of education are associated with increased earnings, independent of training. Conversely, being Black has a negative coefficient, which, although not always statistically significant, suggests the presence of racial disparities in earnings.*/
 
 dfbeta, stub(dfbeta)
 
