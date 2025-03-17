@@ -15,6 +15,7 @@ set more off
 *ssc install randomizr, replace
 *ssc install ritest, replace
 *ssc install outreg2, replace
+*ssc install randtreat, replace
 
 /* Gets user name */
 local user = c(username)
@@ -234,7 +235,7 @@ foreach var of varlist age educ black hisp re74 re75 {
 	matrix balcheck1[`i',4]=r(sd_1) 
 	matrix balcheck1[`i',5]= r(mu_1)-r(mu_2)
 	matrix balcheck1[`i',6]=r(se) 
-	matrix balcheck[`i',7]=r(p)
+	matrix balcheck1[`i',7]=r(p)
         matrix list balcheck1
 		local i=`i'+1
 	if `i'<=7 matrix balcheck1=(balcheck1 \ .,.,.,.,.,.,.) 
@@ -287,7 +288,7 @@ Therefore, we can conclude that the treatment and control groups in jtrain3 are 
 
 *--------------------------------------*
 *------------Question 2.b--------------*
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain3.dta", replace	
+use "$filepath/jtrain3.dta", replace	
 gen treated=.
     set seed 88888
     gen random=uniform()
@@ -301,7 +302,6 @@ gen treated=.
 
 *--------------------------------------*
 *------------Question 2.c--------------*
-ssc install randtreat
 randtreat, generate (treated_2) misfits(missing)
 pwcorr treated treated_2, sig 
 pwcorr treated treated_2, sig star(.05)
@@ -319,7 +319,7 @@ After creating these new treatment groups, we check whether they are correlated 
 
 *--------------------------------------*
 *------------Question 2.d--------------*
-matrix balcheck2=(.,.,.,.,.,.)
+matrix balcheck2=(.,.,.,.,.,.,.)
 
 local i=1
 foreach var of varlist age educ black hisp re74 re75 {
@@ -332,15 +332,16 @@ foreach var of varlist age educ black hisp re74 re75 {
 	matrix balcheck2[`i',4]=r(sd_1) 
 	matrix balcheck2[`i',5]= r(mu_1)-r(mu_2)
 	matrix balcheck2[`i',6]=r(se) 
+        matrix balcheck2[`i',7]=r(p) 
 	matrix list balcheck2
 		local i=`i'+1
-	if `i'<=7 matrix balcheck2=(balcheck2 \ .,.,.,.,.,.) 
+	if `i'<=7 matrix balcheck2=(balcheck2 \ .,.,.,.,.,.,.) 
 	
 }
 
 
 matrix rownames balcheck2= "Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75"
-matrix colnames balcheck2= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
+matrix colnames balcheck2= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)" "p-value"
 
 
 local rows = rowsof(balcheck2)
@@ -354,17 +355,17 @@ forval i = 1/`rows' {
 
 	
 	matrix list balcheck2, f(%9.3f) title("Balance check 1")
-	cd "/Users/ariannadanese/Desktop/Micrometrics/"
+	cd "$filepath/"
 	save balcheck2.dta, replace
 	use balcheck_final.dta, clear
 	matrix balcheck_final2 = balcheck_final, balcheck2
 	save balcheck_final2, replace
 	use balcheck_final2, clear
-	putexcel set "/Users/ariannadanese/Desktop/Micrometrics/Table_1.xlsx", replace
+	putexcel set "$filepath/Table_1.xlsx", replace
 	
 	putexcel A1=matrix(balcheck_final2), names nformat(number_d2)
 	putexcel (A2:A8), overwr bold border(right thick) 
-	putexcel (B1:G1), overwr bold border(bottom thick)
+	putexcel (B1:V1), overwr bold border(bottom thick)
 
 /*(d) Balance Check with Fake Treatment Assignment
 
