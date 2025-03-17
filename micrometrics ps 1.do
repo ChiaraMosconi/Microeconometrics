@@ -2,7 +2,7 @@
 *------- PROBLEM SET 1 -------*
 * Arianna Danese - 
 * Chiara Mosconi - 3158558
-* Emanuela Narduzzi - 
+* Emanuela Narduzzi - 3173310
 *******************************
 clear all
 set more off
