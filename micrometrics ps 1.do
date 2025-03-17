@@ -42,28 +42,29 @@ cd "$filepath"
 use jtrain2.dta, clear
 *--------------------------------------*
 *------------Question 1.a--------------*
-matrix balcheck=(.,.,.,.,.,.)
+matrix balcheck=(.,.,.,.,.,.,.)
 
 local i=1
 foreach var of varlist age educ black hisp re74 re75 nodegree{
 
-	qui ttest `var', by(train) unequal 
+	qui ttest `var', by(train) unequal
 	
 	matrix balcheck[`i',1]=r(mu_2)
 	matrix balcheck[`i',2]=r(sd_2) 
 	matrix balcheck[`i',3]=r(mu_1)
 	matrix balcheck[`i',4]=r(sd_1) 
 	matrix balcheck[`i',5]= r(mu_1)-r(mu_2)
-	matrix balcheck[`i',6]=r(se) 
+	matrix balcheck[`i',6]=r(se)
+	matrix balcheck[`i',7]=r(p)
 	matrix list balcheck
 		local i=`i'+1
-	if `i'<=7 matrix balcheck=(balcheck \ .,.,.,.,.,.) 
+	if `i'<=7 matrix balcheck=(balcheck \ .,.,.,.,.,.,.) 
 	
 }
 
 
 matrix rownames balcheck= "Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75" "No Degree"
-matrix colnames balcheck= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
+matrix colnames balcheck= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)" "p-value"
 
 
 local rows = rowsof(balcheck)
@@ -85,7 +86,8 @@ forval i = 1/`rows' {
 	
 	putexcel A1=matrix(balcheck), names nformat(number_d2)
 	putexcel (A2:A8), overwr bold border(right thick) 
-	putexcel (B1:G1), overwr bold border(bottom thick) 
+	putexcel (B1:H1), overwr bold border(bottom thick) 
+
 
 /* (a) Checking for Covariate Balance (TABLE 1)
 
