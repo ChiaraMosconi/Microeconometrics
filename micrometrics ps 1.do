@@ -16,7 +16,6 @@ set more off
 *ssc install randomizr, replace
 *ssc install ritest, replace
 *ssc install outreg2, replace
-*ssc install randtreat, replace
 
 /* Gets user name */
 local user = c(username)
@@ -220,6 +219,7 @@ These results suggest that no single individual or small group of individuals is
 *----------------------------------------------------------------*
 **************************---QUESTION 2---************************
 *----------------------------------------------------------------*
+*ssc install randtreat, replace
 use "$filepath/jtrain3.dta", replace
 *--------------------------------------*
 *------------Question 2.a--------------*
@@ -470,6 +470,10 @@ These results and the differences between the jtrain2 results and the new result
 *----------------------------------------------------------------*
 **************************---QUESTION 3---************************
 *----------------------------------------------------------------*
+*ssc install pystacked
+*ssc install pdslasso
+*ssc install ivreg2
+*ssc install ranktest
 *--------------------------------------*
 *------------Question 3.a--------------*
 ssc install lassopack
@@ -509,10 +513,7 @@ reg re78 train age educ
 *--------------------------------------*
 *------------Question 3.b--------------*
 *------------Question 3.b1--------------*
-ssc install pystacked
-ssc install pdslasso
-ssc install ivreg2
-ssc install ranktest
+
 pdslasso re78 train (age educ black hisp re74 re75)
 rlasso train age educ black hisp re74 re75
 rlasso re78 age educ black hisp re74 re75
@@ -595,8 +596,8 @@ ritest train _b[train]/_se[train], reps(2000): ///
 *--------------------------------------*
 *------------Question 4.d--------------*
 **--SUBPOINT 1--**
-*In STATA, the standard method for calculating heteroscedasticity-consistent standard errors (HC1) estimates the asymptotic variance of OLS coefficients by replacing the variance-covariance matrix of the error term, σ^2, with the diagonal matrix of squared residuals, S^2. The result is then multiplied by a correction factor, n−k, which accounts for degrees of freedom in the residual vector. HC1 ensures consistency by using S^2 as a consistent estimator for the error term's variance, σ^2.
-*Alternatively, let X be the matrix of covariates and define the projection matrix as:H=X(X′X)^(−1)X′where h(ii) represents the ith diagonal entry of H. The HC3 method refines standard error estimation by adjusting each squared residual, S^2(e(i)^2), by the factor 1/(1−h(ii))^2. This adjustment reduces the influence of outliers and enhances standard error estimation, particularly in smaller samples (n ≤ 250) and in the presence of pronounced heteroskedasticity.
+/*In STATA, the standard method for calculating heteroscedasticity-consistent standard errors (HC1) estimates the asymptotic variance of OLS coefficients by replacing the variance-covariance matrix of the error term, σ^2, with the diagonal matrix of squared residuals, S^2. The result is then multiplied by a correction factor, n−k, which accounts for degrees of freedom in the residual vector. HC1 ensures consistency by using S^2 as a consistent estimator for the error term's variance, σ^2.
+Alternatively, let X be the matrix of covariates and define the projection matrix as:H=X(X′X)^(−1)X′where h(ii) represents the ith diagonal entry of H. The HC3 method refines standard error estimation by adjusting each squared residual, S^2(e(i)^2), by the factor 1/(1−h(ii))^2. This adjustment reduces the influence of outliers and enhances standard error estimation, particularly in smaller samples (n ≤ 250) and in the presence of pronounced heteroskedasticity.*/
 
 **--SUBPOINT 2--**
 *HC1
@@ -709,16 +710,6 @@ gen influence_train = dfbeta1
 
 sort(influence_train)
 
-*First we remove the most influential individuals (the ones in which the influence of training was the highest)
-gen row_num_opposite = 446 - _n
-reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
-*Then we remove the least influential individuals (the ones in which the influence of training was the lowest)
-gen row_num = _n
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(hc3)
-*Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(hc3)
-
-*alternative method
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(hc3)  
@@ -792,18 +783,6 @@ gen influence_train = dfbeta1
 
 sort(influence_train)
 
-
-*First we remove the most influential individuals (the ones in which the influence of training was the highest)
-gen row_num_opposite = 446 - _n
-reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(bootstrap)
-*Then we remove the least influential individuals (the ones in which the influence of training was the lowest)
-gen row_num = _n
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(bootstrap)
-*Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(bootstrap)
-
-*alternative method
-
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))  
@@ -824,7 +803,6 @@ restore
 
 use "$filepath/Table_5_dta", replace
 export excel using "$filepath/Table_5", replace
-
 
 
 
