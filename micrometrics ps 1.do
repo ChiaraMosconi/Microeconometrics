@@ -531,7 +531,7 @@ foreach a of local agevals {
 
 sum educ, detail
 
-levelsof educ, local(educvals) // Get unique values of age
+levelsof educ, local(educvals) // Get unique values of education
 foreach e of local educvals {
     gen educ_`e' = (educ == `e')
 }
@@ -545,7 +545,7 @@ rlasso re78 black hisp re74 re75 i.age_* i.educ_*
 reg re78 train educ_14
 
 **COMMENT
-*With respect to the Lasso regularization performed in point 3a, this double selection procedures ensures a more accurate shrinkage, which leads to a lower bias in the OLS results. The main difference is that the double selection does not consider 'age' as a predictor of the outcome variable, however, we should look at these results carefully. In both pdslasso and rlasso, the variable i.educ_14 is selected for predicting re78. No other predictors (like age, black, hisp, re74, re75) were selected in pdslasso and rlasso for the outcome variable, which is impacted only by the constant, educ_14, and the treatment status. To improve the analysis and achieve better results, it might be asvisable to fine-tune parameters or remove the constant, as the excessive shrinkage and selection of just one category for the years of education indicate. Lastly, as for 'train', both pdslasso and rlasso do not find any significant predictor, this may indicate that the treatment and control groups are balanced in terms of age, education, ethnicity and earnings.
+*With respect to the Lasso regularization performed in point 3a, this double selection procedures ensures a more accurate shrinkage, which leads to a lower bias in the OLS results. The main difference is that the double selection does not consider 'age' as a predictor of the outcome variable, however, we should look at these results carefully. In both pdslasso and rlasso, the variable i.educ_14 is selected for predicting re78. No other predictors (like age, black, hisp, re74, re75) were selected in pdslasso and rlasso for the outcome variable, which is impacted only by the constant, educ_14, and the treatment status. To improve the analysis and achieve better results, it might be advisable to fine-tune parameters or remove the constant, as the excessive shrinkage and selection of just one category for the years of education indicate. Lastly, as for 'train', both pdslasso and rlasso do not find any significant predictors, this may indicate that the treatment and control groups are balanced in terms of age, education, ethnicity and earnings.
 *--------------------------------------*
 
 
