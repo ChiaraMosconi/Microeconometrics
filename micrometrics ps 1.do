@@ -184,7 +184,7 @@ sort(influence_train)
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(robust)  
-outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 3) replace dta
+outreg2 using "$filepath/Table_3", ctitle (Removing highest and lowest 3) replace dta
 restore 
 
 *We remove the 5 highest and 5 lowest observations
