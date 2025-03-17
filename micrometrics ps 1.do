@@ -544,6 +544,52 @@ rlasso re78 black hisp re74 re75 i.age_* i.educ_*
 
 reg re78 train educ_14
 
+**we create a balance table for every level of education**
+matrix balcheck=(.,.,.,.,.,.,.)
+
+local i=1
+foreach var of varlist educ_3 educ_4 educ_5 educ_6 educ_7 educ_8 educ_9 educ_10 educ_11 educ_12 educ_13 educ_14 educ_15 educ_16 {
+
+	qui ttest `var', by(train) unequal
+	
+	matrix balcheck[`i',1]=r(mu_2)
+	matrix balcheck[`i',2]=r(sd_2) 
+	matrix balcheck[`i',3]=r(mu_1)
+	matrix balcheck[`i',4]=r(sd_1) 
+	matrix balcheck[`i',5]= r(mu_1)-r(mu_2)
+	matrix balcheck[`i',6]=r(se)
+	matrix balcheck[`i',7]=r(p)
+	matrix list balcheck
+		local i=`i'+1
+	if `i'<=14 matrix balcheck=(balcheck \ .,.,.,.,.,.,.) 
+	
+}
+
+matrix rownames balcheck= "Educ3" "Educ4" "Educ5" "Educ6" "Educ7" "Educ8" "Educ9" "Educ10" "Educ11" "Educ12" "Educ13" "Educ14" "Educ15" "Educ16"
+matrix colnames balcheck= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)" "p-value"
+
+
+local rows = rowsof(balcheck)
+local cols = colsof(balcheck)
+
+forval i = 1/`rows' {
+    forval j = 1/`cols' {
+        matrix balcheck[`i',`j'] = round(balcheck[`i',`j'], 0.001)
+    }
+}
+
+	
+	matrix list balcheck, f(%9.3f) title("Balance check 10")
+	cd "$filepath"
+	save balcheck10.dta, replace
+	
+	
+	putexcel set "$filepath/Table_10.xlsx", replace
+	
+	putexcel A1=matrix(balcheck), names nformat(number_d2)
+	putexcel (A2:A15), overwr bold border(right thick) 
+	putexcel (B1:H1), overwr bold border(bottom thick) 
+
 **COMMENT
 *With respect to the Lasso regularization performed in point 3a, this double selection procedures ensures a more accurate shrinkage, which leads to a lower bias in the OLS results. The main difference is that the double selection does not consider 'age' as a predictor of the outcome variable, however, we should look at these results carefully. In both pdslasso and rlasso, the variable i.educ_14 is selected for predicting re78. No other predictors (like age, black, hisp, re74, re75) were selected in pdslasso and rlasso for the outcome variable, which is impacted only by the constant, educ_14, and the treatment status. To improve the analysis and achieve better results, it might be advisable to fine-tune parameters or remove the constant, as the excessive shrinkage and selection of just one category for the years of education indicate. Lastly, as for 'train', both pdslasso and rlasso do not find any significant predictors, this may indicate that the treatment and control groups are balanced in terms of age, education, ethnicity and earnings.
 *--------------------------------------*
