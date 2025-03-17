@@ -655,6 +655,9 @@ forval i = 1/`rows' {
 	putexcel (A2:A15), overwr bold border(right thick) 
 	putexcel (B1:H1), overwr bold border(bottom thick) 
 
+pwcorr train age_34 age_46, star(0.05)
+*we find that the correlation between train and age_34 and the correlation between train and age_46 is significant at the 5% level*
+
 reg re78 train 
 *--------------------------------------*
 
