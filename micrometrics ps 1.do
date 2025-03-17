@@ -474,9 +474,9 @@ These results and the differences between the jtrain2 results and the new result
 *ssc install pdslasso
 *ssc install ivreg2
 *ssc install ranktest
+*ssc install lassopack
 *--------------------------------------*
 *------------Question 3.a--------------*
-ssc install lassopack
 use "$filepath/jtrain2.dta", replace
 
 rlasso re78 age educ black hisp re74 re75
@@ -552,6 +552,7 @@ reg re78 train educ_14
 *----------------------------------------------------------------*
 **************************---QUESTION 4---************************
 *----------------------------------------------------------------*
+*ssc install ritest
 *--------------------------------------*
 *------------Question 4.a--------------*
 *guardare sezione 4.2*
@@ -565,7 +566,6 @@ reg re78 train educ_14
 use "$filepath/jtrain2.dta", replace
 *tabstat re78, by(train) stats(mean sd)
 *reg re78 train
-*ssc install ritest
 
 ritest train _b[train]: ///
 	reg re78 train
