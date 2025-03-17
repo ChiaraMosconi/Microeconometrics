@@ -159,7 +159,7 @@ export excel using "$filepath/Table_2", replace
 
 *--------------------------------------*
 *------------Question 1.d--------------*
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 
 reg re78 $x_1 $x_2 $x_3
 
@@ -195,23 +195,23 @@ reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(robust)  
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", ctitle (Removing highest and lowest 3) replace dta
+outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 3) replace dta
 restore 
 
 preserve
 keep if _n < _N - 5  & _n > 4
 reg re78 $x_1 $x_2 $x_3, vce(robust)   
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", ctitle (Removing highest and lowest 5) append dta
+outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 5) append dta
 restore
 
 preserve
 keep if _n < _N - 10  & _n > 9
 reg re78 $x_1 $x_2 $x_3, vce(robust) 
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", ctitle (Removing highest and lowest 10) append dta
+outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 10) append dta
 restore
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_3_dta", replace
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_3", replace
+use ""$filepath/Table_3_dta", replace
+export excel using ""$filepath/Table_3", replace
 
 
 /*(d) Sensitivity Analysis: Influence of Outliers on the Training Effect
