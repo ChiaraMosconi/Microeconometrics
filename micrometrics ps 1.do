@@ -33,8 +33,8 @@ if ("`user'" == "B") {
     global filepath "/FILE/PATH/B/"
 }
 
-if ("`user'" == "C") {
-    global filepath "/FILE/PATH/C/"
+if ("`user'" == "chiaramosconi") {
+    global filepath "/Users/chiaramosconi/Downloads/files 2/"
 }
 // Set directory
 cd "$filepath"
