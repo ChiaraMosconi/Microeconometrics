@@ -180,31 +180,21 @@ gen influence_train = dfbeta1
 
 sort(influence_train)
 
-
-*First we remove the most influential individuals (the ones in which the influence of training was the highest)
-gen row_num_opposite = 446 - _n
-reg re78 $x_1 $x_2 $x_3 if row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(rob)
-*Then we remove the least influential individuals (the ones in which the influence of training was the lowest)
-gen row_num = _n
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3, vce(rob)
-*Then we remove the most influential individuals (the ones in which the influence of training was the lowest and highest)
-reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num_opposite != 10 & row_num_opposite != 5 & row_num_opposite != 3, vce(rob)
-
-
-*alternative method
-
+*First we remove the 3 highest and 3 lowest observations (the ones in which the influence of training was the highest)
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(robust)  
 outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 3) replace dta
 restore 
 
+*We remove the 5 highest and 5 lowest observations
 preserve
 keep if _n < _N - 5  & _n > 4
 reg re78 $x_1 $x_2 $x_3, vce(robust)   
 outreg2 using ""$filepath/Table_3", ctitle (Removing highest and lowest 5) append dta
 restore
 
+*We remove the 10 highest and 10 lowest observations 
 preserve
 keep if _n < _N - 10  & _n > 9
 reg re78 $x_1 $x_2 $x_3, vce(robust) 
