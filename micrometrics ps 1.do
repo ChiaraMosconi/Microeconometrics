@@ -472,7 +472,7 @@ These results and the differences between the jtrain2 results and the new result
 *--------------------------------------*
 *------------Question 3.a--------------*
 ssc install lassopack
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 
 rlasso re78 age educ black hisp re74 re75
 
@@ -560,7 +560,7 @@ reg re78 train educ_14
 *------------Question 4.b--------------*
 **NEYMAN INFERENCE: Differently from classical inference, Fisher's randomization inference provides a way to assess whether an observed realization of a statistic, such as treatment effect estimate, is likely to be observed by chance and, thus, if it is statistically significant. Neyman’s inference produces the distribution of a test statistic under a specified null hypothesis, enabling researchers to evaluate whether the observed realization of the statistic is "extreme" and thus whether the null hypothesis should be rejected. This approach does not depend on assumptions about sample size, the accuracy of the data-generating model, or the distribution of error terms. Unlike asymptotic inference, which assumes that each observation is drawn from a probability distribution, Neyman’s inference treats the set of study subjects as fixed and considers only the treatment assignment as a random variable.
 
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 *tabstat re78, by(train) stats(mean sd)
 *reg re78 train
 *ssc install ritest
@@ -600,7 +600,7 @@ S^2(e(i)^2), by the factor 1/(1−h(ii))^2. This adjustment reduces the influenc
 
 **--SUBPOINT 2--**
 *HC1
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 global x_1 "train"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
@@ -749,7 +749,7 @@ export excel using "$filepath/Table_5", replace
 By repeatedly drawing resamples on which the statistic of interest is computed, bootstrapping generates an empirical approximation of the sampling distribution. The variance and standard deviation of this distribution provide a reliable estimate of the statistic’s variability. 
 If the sample closely reflects the population, the standard deviation of the bootstrap distribution serves as a valid estimate of the standard error.*/
 
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 global x_1 "train"
 global x_2 "age educ black hisp"
 global x_3 "re74 re75"
@@ -768,7 +768,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 2) append dta
+outreg2 [reg2] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 2) append dta
 
 reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))
 count if train==0
@@ -776,13 +776,13 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') (SE bootstrap 3) append dta
+outreg2 [reg3] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') (SE bootstrap 3) append dta
 
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_4_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_4", replace
+use "$filepath/Table_4_dta"
+export excel using "$filepath/Table_4", replace
 
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain2.dta", replace
+use "$filepath/jtrain2.dta", replace
 
 reg re78 $x_1 $x_2 $x_3
 
@@ -807,23 +807,23 @@ reg re78 $x_1 $x_2 $x_3 if row_num != 10 & row_num != 5 & row_num != 3 & row_num
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))  
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 3) append dta
+outreg2 using "$filepath/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 3) append dta
 restore 
 
 preserve
 keep if _n < _N - 5  & _n > 4
 reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000))   
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 5) append dta
+outreg2 using "$filepath/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 5) append dta
 restore
 
 preserve
 keep if _n < _N - 10  & _n > 9
 reg re78 $x_1 $x_2 $x_3, vce(bootstrap, reps(1000)) 
-outreg2 using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 10) append dta
+outreg2 using "$filepath/Table_5", ctitle (BOOTSTRAP Removing highest and lowest 10) append dta
 restore
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_5_dta", replace
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_5", replace
+use "$filepath/Table_5_dta", replace
+export excel using "$filepath/Table_5", replace
 
 
 
