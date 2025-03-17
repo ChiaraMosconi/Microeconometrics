@@ -432,7 +432,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg1
-outreg2 [reg1] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 1) append dta
+outreg2 [reg1] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 1) append dta
 
 reg re78 $x_1 $x_2 , vce(rob)
 count if train==0
@@ -440,7 +440,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg2
-outreg2 [reg2] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 2) append dta
+outreg2 [reg2] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 2) append dta
 
 reg re78 $x_1 $x_2 $x_3 , vce(rob)
 count if train==0
@@ -448,10 +448,11 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 3) append dta
+outreg2 [reg3] using "$filepath/Table_2", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (Observational Control 3) append dta
 
-use "/Users/ariannadanese/Desktop/Micrometrics/Table_2_dta"
-export excel using "/Users/ariannadanese/Desktop/Micrometrics/Table_2", replace
+use "$filepath/Table_2_dta"
+export excel using "$filepath/Table_2", replace
+
 /*We observe a strong treatment effect when we run the first regression, that is when we regress earnings in 78 on the actual treatment variable (train) which indicates whether the individual actually participated in the NSW training group. The treatment effect is highly significant, just like the one observed in columns (1) however it is of much bigger magnitude and of different sign: in column (1) the treatment effect is small and positive while the coefficient in column (7) suggests that participating in the NSW training program had a large and negative effect on real earnings in 1978.
 
 By adding the first set of demographic controls, that is the variables age educ black hisp, we see that the magnitude of the train coefficient diminishes. All the controls added, except for hispanic, have a significant power in explaining the outcome variable. We find the same negative and significant effect of being african-american on earnings and the same positive effect of education of earnings. Age, on the other hand, has explanatory power only when considering the dataset made of 2,675 individuals.
