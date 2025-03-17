@@ -658,7 +658,7 @@ forval i = 1/`rows' {
 pwcorr train age_34 age_46, star(0.05)
 *we find that the correlation between train and age_34 and the correlation between train and age_46 is significant at the 5% level*
 
-reg re78 train 
+reg re78 train  age_34 age_46
 *--------------------------------------*
 
 
