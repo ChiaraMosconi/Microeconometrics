@@ -29,8 +29,8 @@ if ("`user'" == "user") {
     global filepath "/Users/user/Desktop/STATA/micro/files/"
 }
 
-if ("`user'" == "B") {
-    global filepath "/FILE/PATH/B/"
+if ("`user'" == "ariannadanese") {
+    global filepath "/Users/ariannadanese/Desktop/Micrometrics/files/"
 }
 
 if ("`user'" == "chiaramosconi") {
@@ -39,7 +39,7 @@ if ("`user'" == "chiaramosconi") {
 // Set directory
 cd "$filepath"
 
-use jtrain2.dta, replace
+use jtrain2.dta, clear
 *--------------------------------------*
 *------------Question 1.a--------------*
 matrix balcheck=(.,.,.,.,.,.)
