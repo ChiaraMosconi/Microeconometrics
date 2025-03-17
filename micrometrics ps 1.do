@@ -267,7 +267,7 @@ forval i = 1/`rows' {
 	
 	putexcel A1=matrix(balcheck_final), names nformat(number_d2)
 	putexcel (A2:A8), overwr bold border(right thick) 
-	putexcel (B1:H1), overwr bold border(bottom thick)
+	putexcel (B1:O1), overwr bold border(bottom thick)
 
 /*
 (a) Balance Check in jtrain3
