@@ -218,10 +218,10 @@ These results suggest that no single individual or small group of individuals is
 *----------------------------------------------------------------*
 **************************---QUESTION 2---************************
 *----------------------------------------------------------------*
-use "/Users/ariannadanese/Desktop/Micrometrics/files/jtrain3.dta", replace
+use "$filepath/jtrain3.dta", replace
 *--------------------------------------*
 *------------Question 2.a--------------*
-matrix balcheck1=(.,.,.,.,.,.)
+matrix balcheck1=(.,.,.,.,.,.,.)
 
 local i=1
 foreach var of varlist age educ black hisp re74 re75 {
@@ -234,15 +234,16 @@ foreach var of varlist age educ black hisp re74 re75 {
 	matrix balcheck1[`i',4]=r(sd_1) 
 	matrix balcheck1[`i',5]= r(mu_1)-r(mu_2)
 	matrix balcheck1[`i',6]=r(se) 
-	matrix list balcheck1
+	matrix balcheck[`i',7]=r(p)
+        matrix list balcheck1
 		local i=`i'+1
-	if `i'<=7 matrix balcheck1=(balcheck1 \ .,.,.,.,.,.) 
+	if `i'<=7 matrix balcheck1=(balcheck1 \ .,.,.,.,.,.,.) 
 	
 }
 
 
 matrix rownames balcheck1= "Age" "Education" "Black" "Hispanic" "Real Earn 74" "Real Earn 75"
-matrix colnames balcheck1= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)"
+matrix colnames balcheck1= "Mean Trt (1)" "StDev Trt" "Mean Ctrl (2)" "StDev Ctrl" "(1)-(2)" "StDev (1)-(2)" "p-value
 
 
 local rows = rowsof(balcheck1)
@@ -256,17 +257,17 @@ forval i = 1/`rows' {
 
 	
 	matrix list balcheck1, f(%9.3f) title("Balance check 1")
-	cd "/Users/ariannadanese/Desktop/Micrometrics/"
+	cd  "$filepath"
 	save balcheck1.dta, replace
 	use balcheck.dta, clear
 	matrix balcheck_final = balcheck, balcheck1
 	save balcheck_final, replace
 	use balcheck_final, clear
-	putexcel set "/Users/ariannadanese/Desktop/Micrometrics/Table_1.xlsx", replace
+	putexcel set  "$filepath/Table_1.xlsx", replace
 	
 	putexcel A1=matrix(balcheck_final), names nformat(number_d2)
 	putexcel (A2:A8), overwr bold border(right thick) 
-	putexcel (B1:G1), overwr bold border(bottom thick)
+	putexcel (B1:H1), overwr bold border(bottom thick)
 
 /*
 (a) Balance Check in jtrain3
