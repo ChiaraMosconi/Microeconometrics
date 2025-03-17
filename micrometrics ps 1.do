@@ -514,12 +514,19 @@ reg re78 train age educ
 *------------Question 3.b--------------*
 *------------Question 3.b1--------------*
 
+pdslasso re78 train (age educ black hisp re74 re75), robust 
+rlasso train age educ black hisp re74 re75, robust 
+rlasso re78 age educ black hisp re74 re75, robust 
+
+**COMMENT
+*The results confirm a similar penalization to the one we analyzed in point 3.a. In fact, also in this case, through the automatic double selection procedure, the constant is attributed all the explanatory power, and all variables are excluded from the model in both parts of the double selection (for re78 and train). This selection is surprising and might indicate that the Lasso procedure did not find any significant relationship between the predictors and the outcome or treatment. This could be due to high regularization (which can shrink all coefficients) or other factors, such as multicollinearity or weak relationships between the predictors and the outcome. As for the manual double selection procedure through 'rlasso', we cansee that in both regressions (train and re78), only the constant is selected, which means that the Lasso procedure did not select any of the predictors as important for explaining either train or re78. Consequently, in the final OLS regression, only the variable 'train' is included, and its coefficient is 1.794343. This suggests that, based on the double selection procedure, the effect of train on re78 is significant. However, since no other variables were selected, the model does not control for any other covariates like age, educ, or black, etc.
+
+
 pdslasso re78 train (age educ black hisp re74 re75), robust noconstant
 rlasso train age educ black hisp re74 re75, robust noconstant
 rlasso re78 age educ black hisp re74 re75, robust noconstant
-
 **COMMENT
-*The results confirm a similar penalization to the one we analyzed in point 3a. In fact, also in this case, through the automatic double selection procedure, the constant is attributed all the explanatory power, and all variables are excluded from the model in both parts of the double selection (for re78 and train). This selection is surprising and might indicate that the Lasso procedure did not find any significant relationship between the predictors and the outcome or treatment. This could be due to high regularization (which can shrink all coefficients) or other factors, such as multicollinearity or weak relationships between the predictors and the outcome. As for the manual double selection procedure through 'rlasso', we cansee that in both regressions (train and re78), only the constant is selected, which means that the Lasso procedure did not select any of the predictors as important for explaining either train or re78. Consequently, in the final OLS regression, only the variable 'train' is included, and its coefficient is 1.794343. This suggests that, based on the double selection procedure, the effect of train on re78 is significant. However, since no other variables were selected, the model does not control for any other covariates like age, educ, or black, etc.
+*When removing the constant, running lasso with double selection procedure - both manually through rlasso and automatically through pdslasso, we avoid the model capturing all variation through the constant, considering as significant age and education variables, just as we found in point 3.a.
 
 *------------Question 3.b2--------------*
 sum age, detail
