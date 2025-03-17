@@ -776,7 +776,7 @@ local n_ctrl = r(N)
 count if train==1
 local n_trt = r(N)
 estimates store reg3
-outreg2 [reg3] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') (SE bootstrap 3) append dta
+outreg2 [reg3] using "$filepath/Table_4", addstat("Number Treated",`n_trt', "Number Control",`n_ctrl') ctitle (SE bootstrap 3) append dta
 
 
 use "$filepath/Table_4_dta"
