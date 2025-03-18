@@ -679,8 +679,9 @@ forval i = 1/`rows' {
 
 *--------------------------------------*
 *------------Question 4.b--------------*
-**NEYMAN'S INFERENCE: Differently from classical inference, Fisher's randomization inference provides a way to assess whether an observed realization of a statistic, such as treatment effect estimate, is likely to be observed by chance and, thus, if it is statistically significant. Neyman’s inference produces the distribution of a test statistic under a specified null hypothesis, enabling researchers to evaluate whether the observed realization of the statistic is "extreme" and thus whether the null hypothesis should be rejected.*
+**NEYMAN'S INFERENCE: Differently from classical inference, Fisher's randomization inference provides a way to assess whether an observed realization of a statistic, such as treatment effect estimate, is likely to be observed by chance and, thus, if it is statistically significant. Neyman’s inference produces the distribution of a test statistic under a specified null hypothesis - no effect of the treatment - enabling researchers to evaluate whether the observed realization of the statistic is "extreme" and thus whether the null hypothesis should be rejected. The alternative hypothesis is that there exists at least one unit such that this does not hold. *
 *This approach does not depend on assumptions about sample size, the accuracy of the data-generating model, or the distribution of error terms. Unlike asymptotic inference, which assumes that each observation is drawn from a probability distribution, Neyman’s inference treats the set of study subjects as fixed and considers only the treatment assignment as a random variable.*
+
 
 use "$filepath/jtrain2.dta", replace
 *tabstat re78, by(train) stats(mean sd)
