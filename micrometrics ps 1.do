@@ -850,7 +850,7 @@ export excel using "$filepath/Table_5", replace
 *bootstrapping
 /*Bootstrapping is a non-parametric method for estimating standard errors by resampling from a given sample. It assumes that the sample accurately represents the population in terms of the distribution of the variable of interest. 
 By repeatedly drawing resamples on which the statistic of interest is computed, bootstrapping generates an empirical approximation of the sampling distribution. The variance and standard deviation of this distribution provide a reliable estimate of the statistic’s variability. 
-If the sample closely reflects the population, the standard deviation of the bootstrap distribution serves as a valid estimate of the standard error.*/
+If the sample closely reflects the population, the standard deviation of the bootstrap distribution can be considered a valid estimate of the standard error.*/
 
 use "$filepath/jtrain2.dta", replace
 global x_1 "train"
