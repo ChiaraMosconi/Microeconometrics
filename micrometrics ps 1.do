@@ -760,7 +760,7 @@ sort(influence_train)
 preserve
 keep if _n < _N - 3  & _n > 2
 reg re78 $x_1 $x_2 $x_3, vce(robust)  
-outreg2 using "$filepath/Table_5", ctitle (HC1 Removing highest and lowest 3) append dta
+outreg2 using "$filepath/Table_5", ctitle (HC1 Removing highest and lowest 3) replace dta
 restore 
 
 preserve
