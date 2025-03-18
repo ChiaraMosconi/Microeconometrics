@@ -679,7 +679,8 @@ forval i = 1/`rows' {
 
 *--------------------------------------*
 *------------Question 4.b--------------*
-**NEYMAN INFERENCE: Differently from classical inference, Fisher's randomization inference provides a way to assess whether an observed realization of a statistic, such as treatment effect estimate, is likely to be observed by chance and, thus, if it is statistically significant. Neyman’s inference produces the distribution of a test statistic under a specified null hypothesis, enabling researchers to evaluate whether the observed realization of the statistic is "extreme" and thus whether the null hypothesis should be rejected. This approach does not depend on assumptions about sample size, the accuracy of the data-generating model, or the distribution of error terms. Unlike asymptotic inference, which assumes that each observation is drawn from a probability distribution, Neyman’s inference treats the set of study subjects as fixed and considers only the treatment assignment as a random variable.
+**NEYMAN'S INFERENCE: Differently from classical inference, Fisher's randomization inference provides a way to assess whether an observed realization of a statistic, such as treatment effect estimate, is likely to be observed by chance and, thus, if it is statistically significant. Neyman’s inference produces the distribution of a test statistic under a specified null hypothesis, enabling researchers to evaluate whether the observed realization of the statistic is "extreme" and thus whether the null hypothesis should be rejected.*
+*This approach does not depend on assumptions about sample size, the accuracy of the data-generating model, or the distribution of error terms. Unlike asymptotic inference, which assumes that each observation is drawn from a probability distribution, Neyman’s inference treats the set of study subjects as fixed and considers only the treatment assignment as a random variable.*
 
 use "$filepath/jtrain2.dta", replace
 *tabstat re78, by(train) stats(mean sd)
@@ -697,10 +698,11 @@ ritest train _b[train]/_se[train]: ///
 	reg re78 train
 
 
-ritest train _b[train]/_se[train], reps(2000): ///
+ritest train _b[train]/_se[train], reps(10000): ///
 	reg re78 train
 	
-**By conducting multiple permutations of the treatment assignment with varying numbers of replications (10,000, 15,000, and 20,000), we obtained p-values ranging between 0.0041 and 0.0061. These results closely align with the p-value of 0.0044 reported by Athey and Imbens, leading us to the same conclusion: the null hypothesis of no treatment effect on real earnings should be rejected. In his paper, Simon Heß provides numerous examples highlighting the differences between using permute and ritest as randomization commands. Notably, ritest offers greater flexibility in specifying complex resampling structures compared to permute. This flexibility can influence the precision of p-value estimates. Therefore, without access to the specific code and options used by Athey and Imbens in their randomization inference, and given the arbitrary nature of the randomized assignment, slight variations in p-values may arise in our analysis.
+**By conducting multiple permutations of the treatment assignment changing the number of replications (10,000, 15,000, and 20,000), we obtained p-values ranging between 0.0041 and 0.0061. These results closely align with the p-value of 0.0044 reported by Athey and Imbens, leading us to the same conclusion: the null hypothesis of no treatment effect on real earnings should be rejected.**
+In his paper, Simon Heß provides numerous examples highlighting the differences between using permute and ritest as randomization commands. Notably, ritest offers greater flexibility in specifying complex resampling structures compared to permute. This flexibility can influence the precision of p-value estimates. Therefore, without access to the specific code and options used by Athey and Imbens in their randomization inference, and given the arbitrary nature of the randomized assignment, slight variations in p-values may arise in our analysis.
 
 
 **
