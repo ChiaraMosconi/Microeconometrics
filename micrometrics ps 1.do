@@ -672,8 +672,8 @@ forval i = 1/`rows' {
 *ssc install ritest
 *--------------------------------------*
 *------------Question 4.a--------------*
-*According to section 4.2 of Athey and Imbens (2017) , Neyman’s estimator has a sampling variance made of three components: (1) variance of potential outcomes in the control group (2) variance of potential outcomes in the treatment group and (3) the population variance. The last one is unknown and therefore cannot be estimated. Since it is unobservable, it is not taken into account and leads to an upward bias in the variance of the estimator. In turn, this leads to confidence intervals for the ATE that are conservative. However, if we allow for heterogeneous treatment effects, the bias disappears when we assume that the sample is drawn randomly from an infinite population. Under this assumption, the variance estimator corresponds to the variance of the population ATE*
-
+*According to section 4.2 of Athey and Imbens (2017) , Neyman's estimator has a sampling variance made of three components: (1) variance of potential outcomes in the control group (2) variance of potential outcomes in the treatment group and (3) the population variance. The last one is unknown and therefore cannot be estimated. Since it is unobservable, it is not taken into account and leads to an upward bias in the variance of the estimator. In turn, this leads to confidence intervals for the ATE that are conservative. 
+*This bias can disappear under two possible scenarios: (1) when the treatment effect is homogeneous (2) allowing for heterogeneous treatment effects, the bias disappears when we assume that the sample is drawn randomly from an infinite population. Under this assumption, the variance estimator corresponds to the variance of the population ATE*
 *--------------------------------------*
 
 *--------------------------------------*
