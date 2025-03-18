@@ -694,7 +694,7 @@ ritest train _b[train], reps(10000): ///
 	reg re78 train
 	
 **By conducting multiple permutations of the treatment assignment changing the number of replications (10,000, 15,000, and 20,000), we obtained p-values ranging between 0.0041 and 0.0061. These results closely align with the p-value of 0.0044 reported by Athey and Imbens, leading us to the same conclusion: the null hypothesis of no treatment effect on real earnings should be rejected.**
-**In his paper, Simon Heß provides numerous examples highlighting the differences between using 'permute' and 'ritest' as randomization commands. Notably, ritest offers greater flexibility in specifying complex resampling structures compared to permute. This flexibility can influence the precision of p-value estimates. Therefore, without access to the specific code and options used by Athey and Imbens in their randomization inference, and given the arbitrary nature of the randomized assignment, slight variations in p-values may arise in our analysis.
+**In his paper, Simon Heß explains how ritest offers greate flexibility in specifying complex resampling structures. This flexibility can influence the precision of p-value estimates. Therefore, without access to the specific code and options used by Athey and Imbens in their randomization inference, and given the arbitrary nature of the randomized assignment, slight variations in p-values may arise in our analysis.
 
 
 
