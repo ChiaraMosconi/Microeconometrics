@@ -777,6 +777,7 @@ restore
 use "$filepath/Table_5_dta", replace
 export excel using "$filepath/Table_5", replace
 
+*please note that the command dfbeta does not allow us to put the option vce(), therefore we see that the coefficients are unchanged, but the standard errors do change, even if only slighlty, since we are using a different method of estimating the variance-covariance matrix*
 
 *HC3
 use "$filepath/jtrain2.dta", replace
@@ -843,7 +844,7 @@ restore
 use "$filepath/Table_5_dta", replace
 export excel using "$filepath/Table_5", replace
 
-
+*please note that the command dfbeta does not allow us to put the option vce(), therefore we see that the coefficients are unchanged, but the standard errors do change, even if only slighlty, since we are using a different method of estimating the variance-covariance matrix*
 
 **--SUBPOINT 3--**
 
@@ -916,7 +917,7 @@ restore
 use "$filepath/Table_5_dta", replace
 export excel using "$filepath/Table_5", replace
 
-
+*please note that the command dfbeta does not allow us to put the option vce(), therefore we see that the coefficients are unchanged, but the standard errors do change, even if only slighlty, since we are using a different method of estimating the variance-covariance matrix*
 
 **--SUBPOINT 4--**
 
