@@ -591,7 +591,7 @@ forval i = 1/`rows' {
 	save balcheck10.dta, replace
 	
 	
-	putexcel set "$filepath/Table_10.xlsx", replace
+	putexcel set "$filepath/Balcheck_educ.xlsx", replace
 	
 	putexcel A1=matrix(balcheck), names nformat(number_d2)
 	putexcel (A2:A15), overwr bold border(right thick) 
@@ -656,10 +656,10 @@ forval i = 1/`rows' {
 	save balcheck20.dta, replace
 	
 	
-	putexcel set "$filepath/Table_20.xlsx", replace
+	putexcel set "$filepath/Balcheck_age.xlsx", replace
 	
 	putexcel A1=matrix(balcheck), names nformat(number_d2)
-	putexcel (A2:A15), overwr bold border(right thick) 
+	putexcel (A1:A35), overwr bold border(right thick) 
 	putexcel (B1:H1), overwr bold border(bottom thick) 
 
 *We find that both age_34 and age_46 are not balanced. However we have to note that the observations for age_34 amount to a total of 6 and for age_46 they amount to a total of 3. Therefore the signicance levels could be driven by the very small number of observations. Thus, any result from these lasso analyses should be interpreted with extreme caution.*
