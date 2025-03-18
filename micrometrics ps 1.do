@@ -600,20 +600,20 @@ forval i = 1/`rows' {
 **COMMENT
 *With respect to the Lasso regularization performed in point 3a, this double selection procedure ensures a more accurate shrinkage, which leads to a lower bias in the OLS results. The main difference is that the double selection does not consider 'age' as a predictor of the outcome variable, however, we should look at these results carefully. In both pdslasso and rlasso, the variable i.educ_14 is selected for predicting re78. No other predictors (like age, black, hisp, re74, re75) were selected in pdslasso and rlasso for the outcome variable, which is impacted only by the constant, educ_14, and the treatment status. To improve the analysis and achieve better results, it might be advisable to fine-tune parameters or remove the constant, as the excessive shrinkage and selection of just one category for the years of education indicate.
 
-*we now do the same analysis but with robust s.e. *
+*We now do the same analysis but with robust s.e. *
 pdslasso re78 train (black hisp re74 re75 i.age_* i.educ_*), robust
 
 rlasso train black hisp re74 re75 i.age_* i.educ_*, robust
 
 rlasso re78 black hisp re74 re75 i.age_* i.educ_*, robust
 
-*the variables selected are age_34 and age_46.*
+*The variables selected are age_34 and age_46.*
 
 reg re78 train  age_34 age_46
 *age-46 coefficient is extremely significant *
 
 pwcorr train age_34 age_46, star(0.05)
-*we find that the correlation between train and age_34 and the correlation between train and age_46 is significant at the 5% level*
+*We find that the correlation between train and age_34 and the correlation between train and age_46 is significant at the 5% level*
 
 *we do the balance check for the age dummies*
 
@@ -662,7 +662,7 @@ forval i = 1/`rows' {
 	putexcel (A2:A15), overwr bold border(right thick) 
 	putexcel (B1:H1), overwr bold border(bottom thick) 
 
-*we find that both age_34 and age_46 are not balanced. However we have to note that the observations for age_34 amount to a total of 6 and for age_46 they amount to a total of 3. Therefore the signicance levels could be drive by the very small number of observations. Therefore any result from these lasso analysis should be interpreted with extreme caution*
+*We find that both age_34 and age_46 are not balanced. However we have to note that the observations for age_34 amount to a total of 6 and for age_46 they amount to a total of 3. Therefore the signicance levels could be driven by the very small number of observations. Thus, any result from these lasso analyses should be interpreted with extreme caution.*
 *--------------------------------------*
 
 
