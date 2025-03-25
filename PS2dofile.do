@@ -35,4 +35,4 @@ cd "$filepath"
 **************************---QUESTION 1---************************
 *----------------------------------------------------------------*
 
-import delimited pset_4.csv, clear 
+import delimited "$filepath/pset_4.csv"
