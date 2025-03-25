@@ -37,4 +37,14 @@ cd "$filepath"
 
 *--------------------------------------*
 *------------Question 1.a--------------*
+
+
+*--------------------------------------*
+
+*--------------------------------------*
+*------------Question 1.b--------------*
 import delimited "$filepath/pset_4.csv"
+gen reform1=0
+replace reform1=1 if lfdivlaw > 1967 &  lfdivlaw < 1989
+tab st if reform1==1
+collapse (mean) div_rate [fw=stpop], by(year reform1) 
