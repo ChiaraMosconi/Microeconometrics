@@ -49,4 +49,9 @@ replace reform1=1 if lfdivlaw > 1967 &  lfdivlaw < 1989
 tab st if reform1==1
 collapse (mean) div_rate [fw=stpop], by(year reform1) 
 
-twoway (line div_rate year if reform1==1) (line div_rate year if reform1==0), xline(1968 1988) legend(label(1 Reform) label(2 Control))
+reshape wide div_rate, i(year) j(reform1)
+
+* Generate the difference between treated and untreated states
+gen diff = div_rate1 - div_rate0
+
+twoway (line div_rate1 year if reform1==1) (line div_rate0 year if reform1==0)  (line diff year, lpattern(dash) yaxis(2)), xline(1968 1988) legend(label(1 Reform) label(2 Control) label(3 "Difference")))
