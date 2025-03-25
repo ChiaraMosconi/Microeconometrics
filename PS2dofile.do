@@ -77,5 +77,42 @@ gen diff = div_rate1 - div_rate0
 
 twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968 1969) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
 
+*parallel trends: YES
+
+clear all
+import delimited "$filepath/pset_4.csv", clear
+gen UNILATERAL = 2
+
+replace UNILATERAL = 1 if  lfdivlaw > 1968 & lfdivlaw < 1974
+replace UNILATERAL = 0 if lfdivlaw ==  2000
+
+drop if year != 1978 & year != 1968 
+drop if UNILATERAL == 2
+
+generate POST=0
+replace POST=1 if year == 1978
+
+generate POST_UNILATERAL=0
+replace POST_UNILATERAL=1 if POST==1 & UNILATERAL==1
+
+reg div_rate POST_UNILATERAL POST [fw=stpop]
+*POST_UNILATERAL coefficient = 1.70 → Suggests that after unilateral divorce laws were introduced, the divorce rate increased significantly.
+*POST coefficient = 1.38 → Indicates that divorce rates generally increased over time, even in states that did not introduce unilateral divorce.
+*Interpretation: This regression does not control for pre-existing differences between treated and untreated states. If states adopting unilateral divorce already had rising divorce rates, this estimate might overstate the causal effect.
+
+reg div_rate POST_UNILATERAL UNILATERAL POST [fw=stpop]
+*This regression includes a treatment group identifier (UNILATERAL) to account for baseline differences.
+*POST_UNILATERAL coefficient = -0.005 (statistically significant but near zero)
+*→ Contradicts the pooled OLS and suggests that unilateral divorce had little to no effect on divorce rates when controlling for pre-existing differences.
+*UNILATERAL coefficient = 1.71
+*→ Indicates that states that eventually adopted unilateral divorce already had higher divorce rates before the reform.
+*POST coefficient = 2.13
+*→ Suggests a general increase in divorce rates over time for all states.
+
+*The pooled OLS shows a positive and large effect of unilateral divorce on divorce rates.
+*The DiD specification, which accounts for pre-existing differences, finds almost no effect.
+*The key takeaway: The OLS regression likely overestimated the effect of unilateral divorce laws because it didn't control for states that already had higher divorce rates.
+
+
 
 
