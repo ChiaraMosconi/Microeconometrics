@@ -48,3 +48,5 @@ gen reform1=0
 replace reform1=1 if lfdivlaw > 1967 &  lfdivlaw < 1989
 tab st if reform1==1
 collapse (mean) div_rate [fw=stpop], by(year reform1) 
+
+twoway (line div_rate year if reform1==1) (line div_rate year if reform1==0), xline(1968 1988) legend(label(1 Reform) label(2 Control))
