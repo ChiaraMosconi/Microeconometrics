@@ -58,7 +58,7 @@ gen diff = div_rate1 - div_rate0
 twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform 1968-1988) label(2 Control) label(3 "Difference"))
 
 clear all
-import delimited "/Users/ariannadanese/Desktop/Micrometrics/files ps2/pset_4.csv"
+import delimited "$filepath/pset_4.csv"
 gen reform2 = 2
 
 replace reform2 = 1 if  lfdivlaw > 1968 & lfdivlaw < 1974
