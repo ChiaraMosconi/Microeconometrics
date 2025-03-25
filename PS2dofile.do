@@ -54,4 +54,5 @@ reshape wide div_rate, i(year) j(reform1)
 * Generate the difference between treated and untreated states
 gen diff = div_rate1 - div_rate0
 
-twoway (line div_rate1 year if reform1==1) (line div_rate0 year if reform1==0)  (line diff year, lpattern(dash) yaxis(2)), xline(1968 1988) legend(label(1 Reform) label(2 Control) label(3 "Difference")))
+
+twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform) label(2 Control) label(3 "Difference"))
