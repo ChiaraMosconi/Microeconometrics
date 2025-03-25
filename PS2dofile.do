@@ -75,7 +75,7 @@ reshape wide div_rate, i(year) j(reform2)
 *Generate the difference between treated and untreated states
 gen diff = div_rate1 - div_rate0
 
-twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968 1969) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
+twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968.5) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
 
 *parallel trends: YES
 
