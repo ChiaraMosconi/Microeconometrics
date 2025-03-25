@@ -55,4 +55,27 @@ reshape wide div_rate, i(year) j(reform1)
 gen diff = div_rate1 - div_rate0
 
 
-twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform) label(2 Control) label(3 "Difference"))
+twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform 1968-1988) label(2 Control) label(3 "Difference"))
+
+clear all
+import delimited "/Users/ariannadanese/Desktop/Micrometrics/files ps2/pset_4.csv"
+gen reform2 = 2
+
+replace reform2 = 1 if  lfdivlaw > 1968 & lfdivlaw < 1974
+replace reform2 = 0 if lfdivlaw ==  2000
+
+drop if year > 1978
+drop if reform2 == 2
+
+
+collapse (mean) div_rate [fw=stpop], by(year reform2)
+
+reshape wide div_rate, i(year) j(reform2)
+
+*Generate the difference between treated and untreated states
+gen diff = div_rate1 - div_rate0
+
+twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968 1969) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
+
+
+
