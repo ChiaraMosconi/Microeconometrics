@@ -78,7 +78,10 @@ gen diff = div_rate1 - div_rate0
 twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968.5) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
 
 *parallel trends: YES
+*--------------------------------------*
 
+*------------Question 1.c--------------*
+*--------------------------------------*
 clear all
 import delimited "$filepath/pset_4.csv", clear
 gen UNILATERAL = 2
@@ -114,6 +117,6 @@ reg div_rate POST_UNILATERAL UNILATERAL POST [fw=stpop]
 *The DiD specification, which accounts for pre-existing differences, finds almost no effect.
 *The key takeaway: The OLS regression likely overestimated the effect of unilateral divorce laws because it didn't control for states that already had higher divorce rates.
 
-
+*--------------------------------------*
 
 
