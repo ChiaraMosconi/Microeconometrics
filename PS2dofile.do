@@ -271,7 +271,6 @@ drop if year>=1989
 tab year
 gen IMP_UNILATERAL=0
 replace IMP_UNILATERAL=1 if year>=lfdivlaw
-*MA DOBBIAMO TOGLIERE dal 1988 in avanti??????????????????????
 reg div_rate IMP_UNILATERAL i.state i.year [aweight = init_stpop], vce(cluster state)
 
-
+bacondecomp div_rate IMP_UNILATERAL [aweight = init_stpop] 
