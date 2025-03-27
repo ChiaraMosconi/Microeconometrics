@@ -56,7 +56,7 @@ gen diff = div_rate1 - div_rate0
 
 
 twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform 1968-1988) label(2 Control) label(3 "Difference"))
-graph export "$path/graphs/plot_b1.png", replace
+graph export "$path/plot_b1.png", replace
 
 clear all
 import delimited "$filepath/pset_4.csv"
@@ -100,7 +100,7 @@ generate POST_UNILATERAL=0
 replace POST_UNILATERAL=1 if POST==1 & UNILATERAL==1
 
 reg div_rate POST_UNILATERAL POST [aw=stpop], vce(robust)
-outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C") label excel append
+outreg2 using "$path/table_c.xls", title("Regression Table Question C") label excel append
 
 
 *since we do not include UNILATERAl we are disregarding the panel data structure of the dataset and pooling all observations together: this means that we are not taking into account in our regression the fact that we have a number N of US states that are observed in two periods in time (1968 and 1978)
@@ -110,7 +110,7 @@ outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C") l
 
 reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop]
 diff div_rate,  t(UNILATERAL) p(POST), vce(robust)
-outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C")  label excel append
+outreg2 using "$path/table_c.xls", title("Regression Table Question C")  label excel append
 
 *This regression includes a treatment group identifier (UNILATERAL) to account for baseline differences.
 *POST_UNILATERAL coefficient = -0.005 (statistically significant but near zero)
