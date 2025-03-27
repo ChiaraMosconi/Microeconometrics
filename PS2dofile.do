@@ -168,5 +168,48 @@ putexcel (A1:A4), overwr bold border(right thick)
 putexcel (A1:D1), overwr bold border(bottom thick) 
 putexcel (C1:C4), border(right thick) 
 putexcel (A4:D4), border(top thick)	
-	
+*--------------------------------------*
+
+
+*------------Question 1.e--------------*
+*--------------------------------------*
+clear
+use "$filepath/pset_4", replace
+encode st, generate(state)
+
+xtset state year
+drop if year>=1989
+tab year
+gen IMP_UNILATERAL=0
+replace IMP_UNILATERAL=1 if year>=lfdivlaw
+*regression (i)
+reg div_rate IMP_UNILATERAL i.year i.state [aw=stpop], vce(robust)
+outreg2 using "$filepath/tableE", ctitle (Regression Table Question E) replace dta
+
+*regression (ii)
+forval i=1/51{
+	bysort state (year): gen timetrend_lin_`i'=_n if state==`i' 
+	replace timetrend_lin_`i'=0 if timetrend_lin_`i'==.
+}
+local state_timetrend timetrend_lin_*
+
+reg div_rate IMP_UNILATERAL i.year i.state `state_timetrend' [aw=stpop], vce(cluster state)
+outreg2 using "$filepath/tableE", ctitle(Regression Table Question E) append dta
+
+*regression (iii)
+
+forval i=1/51{
+	bysort state (year): gen timetrend_sq_`i'=_n^2 if state==`i'
+	replace timetrend_sq_`i'=0 if timetrend_sq_`i'==.
+}
+local state_timetrend_sq timetrend_sq_*
+reg div_rate IMP_UNILATERAL i.year i.state `state_timetrend' `state_timetrend_sq' [aweight = stpop], vce(cluster state)
+outreg2 using "$filepath/tableE", ctitle(Regression Table Question E) append dta
+
+
+use "$filepath/tableE_dta", replace
+export excel using "$filepath/tableE", replace
+
+*--------------------------------------*
+
 
