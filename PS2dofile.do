@@ -56,7 +56,7 @@ gen diff = div_rate1 - div_rate0
 
 
 twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform 1968-1988) label(2 Control) label(3 "Difference"))
-graph export "$path/plot_b1.png", replace
+graph export plot_b1.png, replace
 
 clear all
 import delimited "$filepath/pset_4.csv"
@@ -77,6 +77,7 @@ reshape wide div_rate, i(year) j(reform2)
 gen diff = div_rate1 - div_rate0
 
 twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968.5) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
+graph export plot_b1.png, replace
 
 *parallel trends: YES
 *--------------------------------------*
