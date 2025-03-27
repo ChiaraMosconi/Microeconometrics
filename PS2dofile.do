@@ -254,4 +254,15 @@ twowayfeweights Y state year D, type(feTR)
 twowayfeweights Y2 state year D, type(feTR)
 twowayfeweights Y3 state year D, type(feTR)
 twowayfeweights Y4 state year D, type(feTR)
+*--------------------------------------*
+
+*------------Question 1.f--------------*
+*--------------------------------------*
+clear all
+use "$filepath/pset_4", replace
+encode st, generate(state)
+
+gen init_stpop = .
+bysort state (year): replace init_stpop = stpop if year == 1956
+bysort state (year): replace init_stpop = init_stpop[_n-1] if missing(init_stpop)
 
