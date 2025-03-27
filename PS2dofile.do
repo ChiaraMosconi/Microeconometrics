@@ -22,7 +22,7 @@ if ("`user'" == "user") {
 }
 
 if ("`user'" == "ariannadanese") {
-    global filepath "/Users/ariannadanese/Desktop/Micrometrics/files/"
+    global filepath "/Users/ariannadanese/Desktop/Micrometrics/files ps2"
 }
 
 if ("`user'" == "chiaramosconi") {
