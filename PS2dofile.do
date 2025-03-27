@@ -102,15 +102,16 @@ replace POST_UNILATERAL=1 if POST==1 & UNILATERAL==1
 reg div_rate POST_UNILATERAL POST [aw=stpop], vce(robust)
 outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C") label excel append
 
-diff div_rate,  t(UNILATERAL) p(POST), vce(robust)
-outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C")  label excel append
 
 *since we do not include UNILATERAl we are disregarding the panel data structure of the dataset and pooling all observations together: this means that we are not taking into account in our regression the fact that we have a number N of US states that are observed in two periods in time (1968 and 1978)
 *POST_UNILATERAL coefficient = 1.70 → Suggests that after unilateral divorce laws were introduced, the divorce rate increased significantly.
 *POST coefficient = 1.38 → Indicates that divorce rates generally increased over time, even in states that did not introduce unilateral divorce.
 *Interpretation: This regression does not control for pre-existing differences between treated and untreated states. If states adopting unilateral divorce already had rising divorce rates, this estimate might overstate the causal effect.
 
-reg div_rate POST_UNILATERAL UNILATERAL POST [fw=stpop]
+reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop]
+diff div_rate,  t(UNILATERAL) p(POST), vce(robust)
+outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C")  label excel append
+
 *This regression includes a treatment group identifier (UNILATERAL) to account for baseline differences.
 *POST_UNILATERAL coefficient = -0.005 (statistically significant but near zero)
 *→ Contradicts the pooled OLS and suggests that unilateral divorce had little to no effect on divorce rates when controlling for pre-existing differences.
