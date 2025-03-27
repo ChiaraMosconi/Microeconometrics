@@ -18,11 +18,11 @@ if ("`user'" == "erick") {
 }
 
 if ("`user'" == "user") {
-    global filepath "/Users/user/Desktop/STATA/micro/assignment 2/files/"
+    global filepath "/Users/user/Desktop/STATA/micro/files/"
 }
 
 if ("`user'" == "ariannadanese") {
-    global filepath "/Users/ariannadanese/Desktop/Micrometrics/files ps2"
+    global filepath "/Users/ariannadanese/Desktop/Micrometrics/files/"
 }
 
 if ("`user'" == "chiaramosconi") {
@@ -57,7 +57,6 @@ gen diff = div_rate1 - div_rate0
 
 twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform 1968-1988) label(2 Control) label(3 "Difference"))
 graph export plot_b1.png, replace
-
 clear all
 import delimited "$filepath/pset_4.csv"
 gen reform2 = 2
@@ -77,7 +76,6 @@ reshape wide div_rate, i(year) j(reform2)
 gen diff = div_rate1 - div_rate0
 
 twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968.5) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
-graph export plot_b1.png, replace
 
 *parallel trends: YES
 *--------------------------------------*
@@ -101,8 +99,7 @@ generate POST_UNILATERAL=0
 replace POST_UNILATERAL=1 if POST==1 & UNILATERAL==1
 
 reg div_rate POST_UNILATERAL POST [aw=stpop], vce(robust)
-outreg2 using "$path/table_c.xls", title("Regression Table Question C") label excel append
-
+outreg2 using "$filepath/tablec", ctitle (Regression Table Question C) replace dta
 
 *since we do not include UNILATERAl we are disregarding the panel data structure of the dataset and pooling all observations together: this means that we are not taking into account in our regression the fact that we have a number N of US states that are observed in two periods in time (1968 and 1978)
 *POST_UNILATERAL coefficient = 1.70 → Suggests that after unilateral divorce laws were introduced, the divorce rate increased significantly.
@@ -110,8 +107,15 @@ outreg2 using "$path/table_c.xls", title("Regression Table Question C") label ex
 *Interpretation: This regression does not control for pre-existing differences between treated and untreated states. If states adopting unilateral divorce already had rising divorce rates, this estimate might overstate the causal effect.
 
 reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop]
-diff div_rate,  t(UNILATERAL) p(POST), vce(robust)
-outreg2 using "$path/table_c.xls", title("Regression Table Question C")  label excel append
+outreg2 using "$filepath/tablec", ctitle(Regression Table Question C) append dta
+
+diff div_rate,  t(UNILATERAL) p(POST) robust
+outreg2 using "$filepath/tablec", ctitle(Regression Table Question C) append dta
+
+use "$filepath/tablec_dta", replace
+export excel using "$filepath/tablec", replace
+
+
 
 *This regression includes a treatment group identifier (UNILATERAL) to account for baseline differences.
 *POST_UNILATERAL coefficient = -0.005 (statistically significant but near zero)
