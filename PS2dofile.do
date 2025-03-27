@@ -131,4 +131,45 @@ export excel using "$filepath/tablec", replace
 
 *--------------------------------------*
 
+*------------Question 1.d--------------*
+*--------------------------------------*
+
+use "$filepath/pset_4new.csv", clear
+
+matrix table_1 = J(3, 3, .)
+
+* unilateral = 1, post = 1
+qui sum  div_rate if UNILATERAL==1 & POST==1 [aw=stpop]
+matrix table_1[1,1]=round(r(mean),.001)
+
+* unilateral = 1, post = 0
+qui sum  div_rate if UNILATERAL==1 & POST==0 [aw=stpop]
+matrix table_1[1,2]=round(r(mean),.001)
+
+* unilateral = 0, post = 1
+qui sum  div_rate if UNILATERAL==0 & POST==1 [aw=stpop]
+matrix table_1[2,1]=round(r(mean),.001)
+
+*unilateral = 0, post = 0
+qui sum  div_rate if UNILATERAL==0 & POST==0 [aw=stpop]
+matrix table_1[2,2]=round(r(mean),.001)
+
+matrix table_1[1,3]=table_1[1,1]-table_1[1,2]
+matrix table_1[2,3]=table_1[2,1]-table_1[2,2]
+matrix table_1[3,1]=table_1[1,1]-table_1[2,1]
+matrix table_1[3,2]=table_1[1,2]-table_1[2,2]
+matrix table_1[3,3]=table_1[3,1]-table_1[3,2]
+
+matrix colnames table_1= "UNILATERAL=1" "UNILATERAL=0" "Di
+
+matrix rownames table_1= "POST=1" "POST=0" "Difference 1"
+	
+* Exporting the table
+putexcel set "$filepath/table_1.xlsx", replace
+putexcel A1=matrix(table_1) , names nformat(number_d2)
+putexcel (A1:A4), overwr bold border(right thick) 
+putexcel (A1:D1), overwr bold border(bottom thick) 
+putexcel (C1:C4), border(right thick) 
+putexcel (A4:D4), border(top thick)	
+	
 
