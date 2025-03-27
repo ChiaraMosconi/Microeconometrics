@@ -47,7 +47,7 @@ import delimited "$filepath/pset_4.csv"
 gen reform1=0
 replace reform1=1 if lfdivlaw > 1967 &  lfdivlaw < 1989
 tab st if reform1==1
-collapse (mean) div_rate [fw=stpop], by(year reform1) 
+collapse (mean) div_rate [aw=stpop], by(year reform1) 
 
 reshape wide div_rate, i(year) j(reform1)
 
@@ -56,6 +56,7 @@ gen diff = div_rate1 - div_rate0
 
 
 twoway (line div_rate1 year ) (line div_rate0 year )  (line diff year, lpattern(dash)), xline(1968 1988) legend(label(1 Reform 1968-1988) label(2 Control) label(3 "Difference"))
+graph export "$path/graphs/plot_b1.png", replace
 
 clear all
 import delimited "$filepath/pset_4.csv"
@@ -98,7 +99,12 @@ replace POST=1 if year == 1978
 generate POST_UNILATERAL=0
 replace POST_UNILATERAL=1 if POST==1 & UNILATERAL==1
 
-reg div_rate POST_UNILATERAL POST [fw=stpop]
+reg div_rate POST_UNILATERAL POST [aw=stpop], vce(robust)
+outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C") label excel append
+
+diff div_rate,  t(UNILATERAL) p(POST), vce(robust)
+outreg2 using "$path/tables/table_c.xls", title("Regression Table Question C")  label excel append
+
 *since we do not include UNILATERAl we are disregarding the panel data structure of the dataset and pooling all observations together: this means that we are not taking into account in our regression the fact that we have a number N of US states that are observed in two periods in time (1968 and 1978)
 *POST_UNILATERAL coefficient = 1.70 → Suggests that after unilateral divorce laws were introduced, the divorce rate increased significantly.
 *POST coefficient = 1.38 → Indicates that divorce rates generally increased over time, even in states that did not introduce unilateral divorce.
