@@ -266,6 +266,8 @@ gen init_stpop = .
 bysort state (year): replace init_stpop = stpop if year == 1956
 bysort state (year): replace init_stpop = init_stpop[_n-1] if missing(init_stpop)
 
+xtset state year
+drop if year>=1989
 tab year
 gen IMP_UNILATERAL=0
 replace IMP_UNILATERAL=1 if year>=lfdivlaw
