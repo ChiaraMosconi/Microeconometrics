@@ -266,3 +266,10 @@ gen init_stpop = .
 bysort state (year): replace init_stpop = stpop if year == 1956
 bysort state (year): replace init_stpop = init_stpop[_n-1] if missing(init_stpop)
 
+tab year
+gen IMP_UNILATERAL=0
+replace IMP_UNILATERAL=1 if year>=lfdivlaw
+*MA DOBBIAMO TOGLIERE dal 1988 in avanti??????????????????????
+reg div_rate IMP_UNILATERAL i.state i.year [aweight = init_stpop], vce(cluster state)
+
+
