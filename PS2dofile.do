@@ -214,3 +214,33 @@ export excel using "$filepath/tableE", replace
 *--------------------------------------*
 
 
+*------------Question 1.f--------------*
+*--------------------------------------*
+clear
+set obs 6
+gen obs = _n
+gen state = floor(.9 + obs/3)
+bysort state: gen year = _n
+gen D = state == 1 & year == 3
+replace D = 1 if state == 2 & (year == 2 | year == 3)
+
+/* Creates simulated outcomes */
+gen Y = 0.1 + 0.02 * (year == 2) + 0.05 * (D == 1) + uniform() / 100
+gen Y2 = 0.1 + 0.02 * (year == 2) + 0.05 * (D == 1) + 0.3 * (state == 2 & year == 3) + uniform() / 100
+gen Y3 = 0.1 + 0.02 * (year == 2) + 0.05 * (D == 1) + 0.4 * (state == 2 & year == 3) + uniform() / 100
+gen Y4 = 0.1 + 0.02 * (year == 2) + 0.05 * (D == 1) + 0.5 * (state == 2 & year == 3) + uniform() / 100
+
+reg Y i.D i.state i.year, vce(robust)
+outreg2 using "$filepath/table_f", ctitle (Regression Table Question F) replace dta
+
+reg Y2 i.D i.state i.year, vce(robust)
+outreg2 using "$filepath/table_f", ctitle (Regression Table Question F) append dta
+
+reg Y3 i.D i.state i.year, vce(robust)
+outreg2 using "$filepath/table_f", ctitle (Regression Table Question F) append dta
+
+reg Y4 i.D i.state i.year, vce(robust)
+outreg2 using "$filepath/table_f", ctitle (Regression Table Question F) append dta
+use "$filepath/table_f_dta", replace
+export excel using "$filepath/table_f", replace
+
