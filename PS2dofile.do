@@ -138,21 +138,18 @@ use "$filepath/pset_4new.csv", clear
 
 matrix table_1 = J(3, 3, .)
 
-* unilateral = 1, post = 1
-qui sum  div_rate if UNILATERAL==1 & POST==1 [aw=stpop]
-matrix table_1[1,1]=round(r(mean),.001)
+sum div_rate if UNILATERAL==1 & POST==1 [aw=stpop]
+matrix table_1[1,1]=r(mean)
 
-* unilateral = 1, post = 0
-qui sum  div_rate if UNILATERAL==1 & POST==0 [aw=stpop]
-matrix table_1[1,2]=round(r(mean),.001)
+sum div_rate if UNILATERAL==0 & POST==1 [aw=stpop]
+matrix table_1[1,2]=r(mean)
 
-* unilateral = 0, post = 1
-qui sum  div_rate if UNILATERAL==0 & POST==1 [aw=stpop]
-matrix table_1[2,1]=round(r(mean),.001)
+sum div_rate if UNILATERAL==1 & POST==0 [aw=stpop]
+matrix table_1[2,1]=r(mean)
 
-*unilateral = 0, post = 0
-qui sum  div_rate if UNILATERAL==0 & POST==0 [aw=stpop]
-matrix table_1[2,2]=round(r(mean),.001)
+sum div_rate if UNILATERAL==0 & POST==0 [aw=stpop]
+matrix table_1[2,2]=r(mean)
+
 
 matrix table_1[1,3]=table_1[1,1]-table_1[1,2]
 matrix table_1[2,3]=table_1[2,1]-table_1[2,2]
