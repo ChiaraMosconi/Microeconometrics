@@ -245,4 +245,7 @@ outreg2 using "$filepath/table_f", ctitle (Regression Table Question F) append d
 use "$filepath/table_f_dta", replace
 export excel using "$filepath/table_f", replace
 
+*------------Question 1.g--------------*
+*--------------------------------------*
+* ssc install twowayfeweights
 
