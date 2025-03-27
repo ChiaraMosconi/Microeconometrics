@@ -210,6 +210,7 @@ outreg2 using "$filepath/tableE", ctitle(Regression Table Question E) append dta
 use "$filepath/tableE_dta", replace
 export excel using "$filepath/tableE", replace
 
+*we account for the fact that not only years and states have specificities when looking at div_rate but that these specificities vary over time 
 *--------------------------------------*
 
 
