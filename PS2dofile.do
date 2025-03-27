@@ -18,7 +18,7 @@ if ("`user'" == "erick") {
 }
 
 if ("`user'" == "user") {
-    global filepath "/Users/user/Desktop/STATA/micro/files/"
+    global filepath "/Users/user/Desktop/STATA/micro/assignment 1/files/"
 }
 
 if ("`user'" == "ariannadanese") {
