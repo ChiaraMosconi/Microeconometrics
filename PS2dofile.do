@@ -249,4 +249,9 @@ export excel using "$filepath/table_f", replace
 *------------Question 1.g--------------*
 *--------------------------------------*
 * ssc install twowayfeweights
+use "$filepath/pset_simulated", replace
+twowayfeweights Y state year D, type(feTR)
+twowayfeweights Y2 state year D, type(feTR)
+twowayfeweights Y3 state year D, type(feTR)
+twowayfeweights Y4 state year D, type(feTR)
 
