@@ -274,3 +274,31 @@ replace IMP_UNILATERAL=1 if year>=lfdivlaw
 reg div_rate IMP_UNILATERAL i.state i.year [aweight = init_stpop], vce(cluster state)
 
 bacondecomp div_rate IMP_UNILATERAL [aweight = init_stpop] 
+
+
+*------------Question 1.i--------------*
+*--------------------------------------*
+clear all
+use "$filepath/pset_4", replace
+encode st, generate(state)
+xtset state year
+
+gen tau = year - lfdivlaw // Compute tau
+
+// Create dummies
+tabulate tau, generate(tempD)  
+
+// Rename dummies to reflect negative and positive tau values
+foreach i of numlist -44/63 {
+    local abs_i = abs(`i')  // Get absolute value
+    if `i' < 0 {
+        rename tempD`=`i'+45' D_m`abs_i'  // Negative years (D_mX)
+    }
+    else {
+        rename tempD`=`i'+45' D_p`i'  // Positive years (D_pX)
+    }
+}
+
+gen D_15plus = (tau >= 15)
+gen D_minus10minus = (tau <= -10)
+
