@@ -302,7 +302,8 @@ foreach i of numlist -44/63 {
 gen D_15plus = (tau >= 15)
 gen D_minus10minus = (tau <= -10)
 
-
+**Run the regresson using the unilateral divorce dummies Dτ st you created and sector (πs) and year (γt) fixed effects.
+*i)
 forvalues i = 10/44 {
 	drop D_m`i'
 }
@@ -312,7 +313,7 @@ forvalues i = 15/63 {
 }
 
 reg div_rate D_m* D_p* i.state i.year [aw=stpop], robust
-
+outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) replace dta
 *ii)
 forval i=1/51{
 	bysort state (year): gen timetrend_lin_`i'=_n if state==`i' 
@@ -321,7 +322,7 @@ forval i=1/51{
 local state_timetrend timetrend_lin_*
 
 reg div_rate D_m* D_p* i.state i.year `state_timetrend' [aw=stpop], robust
-
+outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dta
 *iii)
 forval i=1/51{
 	bysort state (year): gen timetrend_sq_`i'=_n^2 if state==`i'
@@ -330,4 +331,9 @@ forval i=1/51{
 local state_timetrend_sq timetrend_sq_*
 
 reg div_rate D_m* D_p* i.state i.year `state_timetrend' `state_timetrend_sq' [aw=stpop], robust
+outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dta
+
+use "$filepath/tableI_dta", replace
+export excel using "$filepath/table_I", replace
+*--------------------------------------*
 
