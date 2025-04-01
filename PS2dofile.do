@@ -97,6 +97,7 @@ replace POST=1 if year == 1978
 
 generate POST_UNILATERAL=0
 replace POST_UNILATERAL=1 if POST==1 & UNILATERAL==1
+save pset_4new.csv, replace
 
 reg div_rate POST_UNILATERAL POST [aw=stpop], vce(robust)
 outreg2 using "$filepath/tablec", ctitle (Regression Table Question C) replace dta
