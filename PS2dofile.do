@@ -338,3 +338,13 @@ use "$filepath/tableI_dta", replace
 export excel using "$filepath/table_I", replace
 *--------------------------------------*
 
+*------------Question 1.j--------------*
+*--------------------------------------*
+coefplot reg1, keep (D_m* D_p*) xline(0) ci(95)
+graph export coefplot1.png, replace
+coefplot reg2, keep (D_m* D_p*) xline(0) ci(95)
+graph export coefplot2.png, replace
+coefplot reg3, keep (D_m* D_p*) xline(0) ci(95)
+graph export coefplot3.png, replace
+
+
