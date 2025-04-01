@@ -302,3 +302,32 @@ foreach i of numlist -44/63 {
 gen D_15plus = (tau >= 15)
 gen D_minus10minus = (tau <= -10)
 
+
+forvalues i = 10/44 {
+	drop D_m`i'
+}
+
+forvalues i = 15/63 {
+	drop D_p`i'
+}
+
+reg div_rate D_m* D_p* i.state i.year [aw=stpop], robust
+
+*ii)
+forval i=1/51{
+	bysort state (year): gen timetrend_lin_`i'=_n if state==`i' 
+	replace timetrend_lin_`i'=0 if timetrend_lin_`i'==.
+}
+local state_timetrend timetrend_lin_*
+
+reg div_rate D_m* D_p* i.state i.year `state_timetrend' [aw=stpop], robust
+
+*iii)
+forval i=1/51{
+	bysort state (year): gen timetrend_sq_`i'=_n^2 if state==`i'
+	replace timetrend_sq_`i'=0 if timetrend_sq_`i'==.
+}
+local state_timetrend_sq timetrend_sq_*
+
+reg div_rate D_m* D_p* i.state i.year `state_timetrend' `state_timetrend_sq' [aw=stpop], robust
+
