@@ -294,7 +294,19 @@ replace IMP_UNILATERAL=1 if year>=lfdivlaw
 reg div_rate IMP_UNILATERAL i.state i.year [aweight = init_stpop], vce(cluster state)
 
 bacondecomp div_rate IMP_UNILATERAL [aweight = init_stpop] 
+graph export "$output/graphs/bacondecomp.png", replace
 
+/*Goodman-Bacon (2021) shows that the two way fixed effects estimate is a weighted average of all possible 2x2 DiD estimates
+Goodman-Bacon (2021 proposes a decomposition of the difference-in-differences (DiD) estimator when treatment adoption timing varies across units, that is when there is staggered adoption. 
+The main idea is that the traditional two-way fixed effects (TWFE) estimator (with state and time fixed effects in our case) can be expressed as a weighted average of all possible simpler 2x2 DiD comparisons in the data. 
+*/
+
+*the graph plots on the x-axis the weight each 2x2 estimate gets in the TWFE regression and on the y-axis the actual 2x2 DiD estimate. The dashed line shows the overall DiD estimate (-0.0298609), i.e., the average treatment effect estimated by your TWFE regression.
+
+*the most influential 2x2 Difference-in-Differences are the ones determined by the "never treated vs timing". we also see this in the Bacon Decomposition output: most of the weight (88%/0.8800) is coming from comparisons between treated units and never-treated units. These comparisons produce a negative estimate (−0.084), which could drive the overall DiD estimate downward.
+
+*regarding negative weight, there is no evidence of issues with negative weights in the graph 
+*Goodman-Bacon (2021) explains that when treatment effects do not change over time,TWFEDD all weights are positive. Negative weights only arise when average treatment effects vary overtime.
 
 *------------Question 1.i--------------*
 *--------------------------------------*
