@@ -77,8 +77,11 @@ reshape wide div_rate, i(year) j(reform2)
 gen diff = div_rate1 - div_rate0
 
 twoway (line div_rate1 year) (line div_rate0 year)  (line diff year, lpattern(dash)), xline(1968.5) legend(label(1 Reform 1969-1973) label(2 Reform 2000) label(3 "Difference"))
+graph export "$filepath/paralleltrends.png", replace
 
-*parallel trends: YES
+*Graph (i) [Reform 1968–1988 vs Control]: In the pre-1968 period, both treatment and control groups show very similar upward trends in divorce rates. The green difference line is relatively flat, suggesting parallel pre-trends. After 1968, the treatment group diverges, which is what we would expect if the reform had an effect.
+*Graph (ii) [Reform 1969–1973 vs Reform 2000]: the pre-treatment trends look similar between groups and the green dashed line (difference) is relatively stable. After 1969, the 1969–1973 adopters' divorce rate accelerates
+*Both graphs show evidence of parallel pre-trends, which is crucial for the difference-in-differences approach to be valid.
 *--------------------------------------*
 
 *------------Question 1.c--------------*
