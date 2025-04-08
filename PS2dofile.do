@@ -110,6 +110,7 @@ outreg2 using "$filepath/tablec", ctitle (Regression Table Question C) replace d
 *POST_UNILATERAL coefficient = 1.70 → Suggests that after unilateral divorce laws were introduced, the divorce rate increased significantly.
 *POST coefficient = 1.38 → Indicates that divorce rates generally increased over time, even in states that did not introduce unilateral divorce.
 *Interpretation: This regression does not control for pre-existing differences between treated and untreated states. If states adopting unilateral divorce already had rising divorce rates, this estimate might overstate the causal effect.
+*The coefficient on POST_UNILATERAL (1.701) captures the raw difference in divorce rates between treated and control states in 1978, not accounting for pre-existing differences between treated and control states.
 
 reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop]
 outreg2 using "$filepath/tablec", ctitle(Regression Table Question C) append dta
@@ -120,20 +121,15 @@ outreg2 using "$filepath/tablec", ctitle(Regression Table Question C) append dta
 use "$filepath/tablec_dta", replace
 export excel using "$filepath/tablec", replace
 
-
-
 *This regression includes a treatment group identifier (UNILATERAL) to account for baseline differences.
-*POST_UNILATERAL coefficient = -0.005 (statistically significant but near zero)
+*The DiD estimator is the coefficient on POST_UNILATERAL (-0.005) which is statistically insignificant.
 *→ Contradicts the pooled OLS and suggests that unilateral divorce had little to no effect on divorce rates when controlling for pre-existing differences.
-*UNILATERAL coefficient = 1.71
-*→ Indicates that states that eventually adopted unilateral divorce already had higher divorce rates before the reform.
-*POST coefficient = 2.13
-*→ Suggests a general increase in divorce rates over time for all states.
+*UNILATERAL coefficient = 1.71 - Indicates that states that eventually adopted unilateral divorce already had higher divorce rates before the reform - This is why the pooled OLS was misleading: it conflated pre-existing differences with the treatment effect.
+*POST coefficient = 2.13 → it reflects a general time trend, suggesting a general increase in divorce rates over time for all states.
 
 *The pooled OLS shows a positive and large effect of unilateral divorce on divorce rates.
 *The DiD specification, which accounts for pre-existing differences, finds almost no effect.
-*The key takeaway: The OLS regression likely overestimated the effect of unilateral divorce laws because it didn't control for states that already had higher divorce rates.
-
+*The key takeaway: The POLS regression likely overestimated the effect of unilateral divorce laws because it didn't control for states that already had higher divorce rates.
 *--------------------------------------*
 
 *------------Question 1.d--------------*
