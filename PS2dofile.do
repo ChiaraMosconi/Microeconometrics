@@ -276,7 +276,7 @@ twowayfeweights Y3 state year D, type(feTR)
 twowayfeweights Y4 state year D, type(feTR)
 *--------------------------------------*
 
-*------------Question 1.f--------------*
+*------------Question 1.h--------------*
 *--------------------------------------*
 clear all
 use "$filepath/pset_4", replace
