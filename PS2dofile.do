@@ -316,7 +316,10 @@ forvalues i = 15/63 {
 	drop D_p`i'
 }
 
-reg div_rate D_m* D_p* i.state i.year [aw=stpop], robust
+rename D_15plus D_p15
+rename D_minus10minus D_m10
+save pset_4eventstudy, replace 
+reg div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* i.state i.year [aw=stpop], robust
 estimates store reg1
 outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) replace dta
 *ii)
@@ -326,7 +329,7 @@ forval i=1/51{
 }
 local state_timetrend timetrend_lin_*
 
-reg div_rate D_m* D_p* i.state i.year `state_timetrend' [aw=stpop], robust
+reg div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* i.state i.year `state_timetrend' [aw=stpop], robust nocons
 estimates store reg2
 outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dta
 *iii)
@@ -336,7 +339,7 @@ forval i=1/51{
 }
 local state_timetrend_sq timetrend_sq_*
 
-reg div_rate D_m* D_p* i.state i.year `state_timetrend' `state_timetrend_sq' [aw=stpop], robust
+reg div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* i.state i.year `state_timetrend' `state_timetrend_sq' [aw=stpop], robust nocons
 estimates store reg3
 outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dta
 
@@ -346,11 +349,65 @@ export excel using "$filepath/table_I", replace
 
 *------------Question 1.j--------------*
 *--------------------------------------*
-coefplot reg1, keep (D_m* D_p*) xline(0) ci(95)
+coefplot reg1, keep (D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) xline(0) ci(95)
 graph export coefplot1.png, replace
-coefplot reg2, keep (D_m* D_p*) xline(0) ci(95)
+coefplot reg2, keep (D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) xline(0) ci(95)
 graph export coefplot2.png, replace
-coefplot reg3, keep (D_m* D_p*) xline(0) ci(95)
+coefplot reg3, keep (D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) xline(0) ci(95)
 graph export coefplot3.png, replace
+coefplot reg1 reg2 reg3, keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) xline(0) ci(95) 
+graph export coefplotall.png, replace
+
+*------------Question 1.k--------------*
+*--------------------------------------*
+
+*--------------------------------------*
+
+
+
+
+
+*------------Question 1.l--------------*
+*--------------------------------------*
+ssc install avar
+ssc install eventstudyinteract
+ssc install ftools
+help eventstudyinteract
+clear all
+use "$filepath/pset_4eventstudy", replace
+
+
+gen control_cohort=0
+replace control_cohort=1 if lfdivlaw==2000
+eventstudyinteract div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* [aw=stpop] , absorb(i.year i.state) cohort(lfdivlaw) control_cohort(control_cohort) vce(cluster state)
+
+matrix C = e(b_iw)
+mata st_matrix("A",sqrt(diagonal(st_matrix("e(V_iw)"))))
+matrix C = C \ A'
+matrix list C
+coefplot matrix(C[1]), se(C[2]) keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) vertical yline(0) xtitle("Years after divorce reform") ytitle("Estimated effect") ///
+				title("Dependent variable: divorce rate") xlabel(, alternate) nolabel
+graph export "$filepath/plot_Ql1.png", replace
+
+eventstudyinteract div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* [aw=stpop] , absorb(i.year i.state) cohort(lfdivlaw) covariates(`state_timetrend')  control_cohort(control_cohort) vce(cluster state)
+matrix C = e(b_iw)
+mata st_matrix("A",sqrt(diagonal(st_matrix("e(V_iw)"))))
+matrix C = C \ A'
+matrix list C
+coefplot matrix(C[1]), se(C[2]) keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) vertical yline(0) xtitle("Years after divorce reform") ytitle("Estimated effect") ///
+				title("Dependent variable: divorce rate") xlabel(, alternate) nolabel
+graph export "$filepath/plot_Ql2.png", replace
+
+eventstudyinteract div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* [aw=stpop] , absorb(i.year i.state) cohort(lfdivlaw) covariates(`state_timetrend' `state_timetrend_sq')  control_cohort(control_cohort) vce(cluster state)
+matrix C = e(b_iw)
+mata st_matrix("A",sqrt(diagonal(st_matrix("e(V_iw)"))))
+matrix C = C \ A'
+matrix list C
+coefplot matrix(C[1]), se(C[2]) keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) vertical yline(0) xtitle("Years after divorce reform") ytitle("Estimated effect") ///
+				title("Dependent variable: divorce rate") xlabel(, alternate) nolabel
+graph export "$filepath/plot_Ql3.png", replace
+
+
+*are your results consistent with the ones from the original paper? Briefly explain what kind of correction your proposed algorithm is performing.*
 
 
