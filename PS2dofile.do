@@ -317,6 +317,7 @@ forvalues i = 15/63 {
 }
 
 reg div_rate D_m* D_p* i.state i.year [aw=stpop], robust
+estimates store reg1
 outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) replace dta
 *ii)
 forval i=1/51{
@@ -326,6 +327,7 @@ forval i=1/51{
 local state_timetrend timetrend_lin_*
 
 reg div_rate D_m* D_p* i.state i.year `state_timetrend' [aw=stpop], robust
+estimates store reg2
 outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dta
 *iii)
 forval i=1/51{
@@ -335,6 +337,7 @@ forval i=1/51{
 local state_timetrend_sq timetrend_sq_*
 
 reg div_rate D_m* D_p* i.state i.year `state_timetrend' `state_timetrend_sq' [aw=stpop], robust
+estimates store reg3
 outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dta
 
 use "$filepath/tableI_dta", replace
