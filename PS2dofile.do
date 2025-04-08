@@ -171,7 +171,6 @@ putexcel (C1:C4), border(right thick)
 putexcel (A4:D4), border(top thick)	
 *--------------------------------------*
 
-
 *------------Question 1.e--------------*
 *--------------------------------------*
 clear
@@ -187,6 +186,7 @@ replace IMP_UNILATERAL=1 if year>=lfdivlaw
 reg div_rate IMP_UNILATERAL i.year i.state [aw=stpop], vce(robust)
 estimates store reg1
 outreg2 using "$filepath/tableE", ctitle (Regression Table Question E) replace dta
+*IMP_UNILATERAL: -0.055 (p=0.346)
 
 *regression (ii)
 forval i=1/51{
@@ -198,6 +198,7 @@ local state_timetrend timetrend_lin_*
 reg div_rate IMP_UNILATERAL i.year i.state `state_timetrend' [aw=stpop], vce(cluster state)
 estimates store reg2
 outreg2 using "$filepath/tableE", ctitle(Regression Table Question E) append dta
+*IMP_UNILATERAL: +0.477 (p=0.023
 
 *regression (iii)
 
@@ -213,10 +214,25 @@ outreg2 using "$filepath/tableE", ctitle(Regression Table Question E) append dta
 
 use "$filepath/tableE_dta", replace
 export excel using "$filepath/tableE", replace
+*IMP_UNILATERAL: +0.334 (p=0.032)
 
-*we account for the fact that not only years and states have specificities when looking at div_rate but that these specificities vary over time 
+*regression (i): The DiD coefficient is small, negative, and statistically insignificant. This suggests that, after controlling for state and year fixed effects, unilateral divorce laws had no detectable effect on divorce rates.
+
+*in the following regressions, we account for the fact that not only years and states have specificities when looking at div_rate but that these specificities vary over time 
+*in regression (i) we were assuming that state-specific effects are constant over time and that year-specific effects are common across all states, however we were not accounting for the possibility that states evolve differently over time 
+*by adding state-specific time trends, we are allowing each state to have its own trajectory
+
+*regression (ii) - adding State-Specific Linear Time Trends - The DiD coefficient becomes positive and statistically significant which suggests that states adopting unilateral divorce laws had an increase in divorce rates. The change from negative to positive of the DiD coefficient between regression (i) and (ii) implies that omitted trends were biasing the DiD estimate downward
+
+
+*regression (iii) - including State-Specific Linear Time Trends and State-Specific Quadratic Time Trends - Adding quadratic trends reduces the estimate slightly (0.33), but the effect remains significant.
+
+*the results change across the three specifications because in regression (i) we are assuming that state-specific factors are time-invariant, however if there is a possibility that they evolve over time, then the (i) model was not correctly specified. 
+*the differences we might observe between (ii) and (iii) have to do with the shape we assume state-specific time trends have. In (ii) we assume that the trends are linear, however in reality trends may accellerate or decelerate and non-linear trend capture this feature
+
+*the estimates across (i) (ii) and (iii) would not change if the parallel trend assumption held perfectly: then control and treated states wold follow identical divorce rate trends in the absence of the policy and there would be no state-specific time trends 
+
 *--------------------------------------*
-
 
 *------------Question 1.f--------------*
 *------------Question 1.f--------------*
