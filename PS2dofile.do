@@ -37,11 +37,9 @@ cd "$filepath"
 
 *--------------------------------------*
 *------------Question 1.a--------------*
-*we should use analytic weights (aweight)
-*analytic weights (aweight) are appropriate when each observation represents a mean computed from a different-sized sample. That is exactly the situation here: divorce rates are computed per 1,000 people in each state, and you know the total state population with stpop.
-*So you're telling Stata: "Each observation (divorce rate for a state-year) comes from a sample with a different number of people, so give more weight to larger populations when calculating summary statistics or running regressions."
-
-
+*we should use analytic weights (aweight) because the variable div rate (divorces per 1,000 people) is an average computed at the state-year level. Analytic weights are specifically designed for situations where each observation represents a mean, and the weight is the size of the sample from which that mean was taken.
+*frequency weights are not the appropriate choice because they would treat the data as if there are multiple identical observations, which is not the case here since the div rate represents a mean. 
+*sampling weights are not the appropriate choice because the data used is not survey data where observations have different probabilities of being sampled.
 *--------------------------------------*
 
 *--------------------------------------*
