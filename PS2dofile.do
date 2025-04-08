@@ -37,6 +37,9 @@ cd "$filepath"
 
 *--------------------------------------*
 *------------Question 1.a--------------*
+*we should use analytic weights (aweight)
+*analytic weights (aweight) are appropriate when each observation represents a mean computed from a different-sized sample. That is exactly the situation here: divorce rates are computed per 1,000 people in each state, and you know the total state population with stpop.
+*So you're telling Stata: "Each observation (divorce rate for a state-year) comes from a sample with a different number of people, so give more weight to larger populations when calculating summary statistics or running regressions."
 
 
 *--------------------------------------*
