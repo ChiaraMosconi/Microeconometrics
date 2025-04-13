@@ -392,7 +392,16 @@ graph export coefplotall.png, replace
 *--------------------------------------*
 
 
+/*In his paper Wolfers re-examines the findings of Friedberg (1998) and arrives at different conclusions regarding the impact of unilateral divorce laws on divorce rates. While Friedberg concludes that the adoption of unilateral divorce laws caused a significant and permanent increase in divorce rates, Wolfers finds that this effect was temporary and dissipated within approximately a decade after implementation.
 
+Friedberg's analysis is based on a state-level panel from 1968 to 1988 and employs a difference-in-differences framework that includes state and year fixed effects, as well as state-specific linear time trends to control for preexisting trends in divorce rates.
+Her preferred specification suggests that the introduction of unilateral divorce laws increased the divorce rate by approximately 0.447 divorces per 1,000 people annually. This effect is interpreted as permanent and is estimated to account for about one-sixth of the overall increase in U.S. divorce rates since the 1960s.
+Wolfers replicates Friedberg's results but identifies a methodological issue in the interpretation of the state-specific time trends.
+He argues that Friedberg's specification confounds the dynamic response to policy reform with pre-existing trends, particularly because her model uses a single treatment dummy variable for all post-reform years. This approach can incorrectly attribute part of the post-reform adjustment to time trends, especially when dynamic effects—such as an initial spike in divorces followed by a return to baseline—are not explicitly modeled.
+
+To address this, Wolfers extends the dataset back to 1956 and implements an event-study design with multiple dummy variables indicating years since reform. This allows for a flexible modeling of the policy's dynamic effects. His findings show that divorce rates increase sharply in the first years after the introduction of unilateral divorce laws but gradually decline, with no statistically significant effect remaining after about ten years. In some specifications, the long-run effect is even negative, though this result is sensitive to model assumptions.
+
+Wolfers also uses census data to examine the stock of individuals who have ever been divorced. These data show no significant long-run increase in the ever-divorced population following the legal reforms, supporting the conclusion that the policy impact was not persistent.*/
 
 
 *------------Question 1.l--------------*
