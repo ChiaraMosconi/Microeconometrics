@@ -112,7 +112,7 @@ outreg2 using "$filepath/tablec", ctitle (Regression Table Question C) replace d
 *Interpretation: This regression does not control for pre-existing differences between treated and untreated states. If states adopting unilateral divorce already had rising divorce rates, this estimate might overstate the causal effect.
 *The coefficient on POST_UNILATERAL (1.701) captures the raw difference in divorce rates between treated and control states in 1978, not accounting for pre-existing differences between treated and control states.
 
-reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop]
+reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop], vce(robust)
 outreg2 using "$filepath/tablec", ctitle(Regression Table Question C) append dta
 
 diff div_rate,  t(UNILATERAL) p(POST) robust
