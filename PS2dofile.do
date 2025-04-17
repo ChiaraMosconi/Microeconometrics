@@ -246,6 +246,7 @@ gen state = floor(.9 + obs/3)
 bysort state: gen year = _n
 gen D = state == 1 & year == 3
 replace D = 1 if state == 2 & (year == 2 | year == 3)
+set seed 3333
 
 /* Creates simulated outcomes */
 gen Y = 0.1 + 0.02 * (year == 2) + 0.05 * (D == 1) + runiform() / 100
@@ -267,6 +268,17 @@ reg Y4 i.D i.state i.year, vce(robust)
 outreg2 using "$filepath/table_f", ctitle (Regression Table Question F) append dta
 use "$filepath/table_f_dta", replace
 export excel using "$filepath/table_f", replace
+*state 1 receives treatment in year 3, state 2 receives treatment in year 2 and 3
+*we have generated four outcome variables Y, Y2, Y3, Y4
+
+*OUTCOME Y: here the parallel trends assumption holds perfectly. The true effect is 0.05, since we construct Y such that 0.05 * (D == 1)
+*Our estimates is equal to 0.0523, therefore it is close to the true value. Moreover, it is significant as the p-value=0.031. Therefore, the model is correctly estimating the treatment effect.
+
+*OUTCOME Y2, Y3 and Y4: the true effect is still 0.05 as all gen Y* contain 0.05 * (D == 1). However, we have added state-specific trends for State 2 in Year 3 (for Y2 this is 0.3 * (state == 2 & year == 3), for Y3 this is 0.4 * (state == 2 & year == 3) and for Y4 this is 0.5 * (state == 2 & year == 3)) - We can interpret this +0.3, +0.4 and +0.5 coefficients as an example of state- year specific trends or as an example of heterogeneity of treatment across time, that is a failure of the constant effect assumption. 
+
+*Looking at our estimates when regressing Y2, Y3 and Y4, we see that the estimated effect becomes insignificant and has the wrong sign (it is negative). 
+*Moreover it becomes more and more negative when going from Y2 to Y3 that is when the coefficient in front of (state == 2 & year == 3)  becomes larger. Therefore the bias grows as the state-specific trend increases (+0.3 → +0.5).
+*The treatment coefficient is biased downward and even changes sign because state 2 is experiencing this extra trend in year 3 and the model is not able to distinguish between the true treatment effect and State 2's extra trend. The model wrongly attributes this state-year trend to the treatment and this leads to incorrect estimates.
 
 *------------Question 1.g--------------*
 *--------------------------------------*
@@ -276,6 +288,37 @@ twowayfeweights Y state year D, type(feTR)
 twowayfeweights Y2 state year D, type(feTR)
 twowayfeweights Y3 state year D, type(feTR)
 twowayfeweights Y4 state year D, type(feTR)
+
+
+	/*De Chaisemartin and d'Haultfoeuille (2020) prove that ,under the common trends assumption:
+(1) the coefficient beta obtained by running a Two-Way Fixed Effects regression is the expectation of a weighted sum of the ATE in each group and period (g,t), where weights could potentially be negative 
+(2) the coefficient beta obtained by running a Two-Way Fixed Effects regression is a biased estimator of the true Average Treatment
+
+In the De Chaisemartin and d'Haultfoeuille (2020), the staggered adoption design that is taken examined is exactly the same to the one we are analyzing: three time periods (t=3, year 1, year 2 and year 3) and two groups (g=2, state 1 and state 2). Group 1  is untreated at periods 1 and2 and treated at period 3, while group 2 is untreated at period 1 and treated both at periods 2 and 3.
+	
+Then the β_{fe} is a weighted sum of the expected ATE (state 1, period 3), ATE (state 2, period 2) and ATE (state 2, period 3), that is the the three treated (state, year) cells. 
+The weights of this sum are 1/2, for ATE (state 1, period 3), 1, for ATE (state 2, period 2), and -1/2 for ATE (state 2, period 3).  This is also confirmed by the output of the twowayfeweights command: the Positive weights are 2 and sum up to 1.5 and the negative weights  are just 1 and it is equal to -0.5.
+
+This last negative weight, that is the weight associated with ATE(state 2, period 3), is the problematic one as it is the one biasing the β_{fe} and making it a misleading measure of the treatment effect. 
+
+This is the reason why, despite all ATEs being positive in the regression with Y4, we have a negative coefficient. 
+
+Let us consider the situation at Y4:
+β_{fe} = 1/2 * E[ATE 1,3] + 1 * E[ATE 2,2] − 1/2 * E[ATE 2,3] .
+
+By substituting with the ATEs we have 
+β = (1/2)*0.05 + 1*0.05 - (1/2)*0.55 = 0.025 + 0.05 - 0.275 = -0.2
+
+which is more or less close to the value -0.2001 we get when running the regression "reg Y4 i.D i.state i.year, vce(robust)", taking into account that there is still some randomness allowed when creating the outcome Y4
+
+Intuitively, what is happening is that over time the treatment effect cumulates and state 2, during the second year of treatment (that is at year 3), is experiencing a larger average treatment effect and therefore, as shown by De Chaisemartin and d'Haultfoeuille (2020), β_{fe} is more likely to assign a negative weight to periods where a large fraction of groups are treated, and to groups treated for many periods. Therefore, in our simple scenario, negative weights are a concern because we have a state that is treated for more periods compared to the other state. In general, this is a concern when analyzing staggered adoption designs. 
+We can say that in the scenario with Y4, the constant effect assumption is violated.
+
+This is the key problem with Two-Way Fixed Effects in staggered adoption settings: TWFE rely on comparisons that can become invalid when treatment effects vary over time or across groups.  
+
+In staggered adoption some units are treated earlier than others, however TWFE compares later-treated units (State 1 in Year 3) to already-treated units (State 2 in Year 3). This comparison is a "bad" one because the control group (State 2 in Year 3) has already been treated. If treatment effects were constant, TWFE would still work (as it can be seen in the baseline Y scenario). However, if the constant effect assumption is violated, the TWFE estimate becomes biased and even opposite signed.
+	*/
+
 *--------------------------------------*
 
 *------------Question 1.h--------------*
