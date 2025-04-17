@@ -130,6 +130,8 @@ export excel using "$filepath/tablec", replace
 *The pooled OLS shows a positive and large effect of unilateral divorce on divorce rates.
 *The DiD specification, which accounts for pre-existing differences, finds almost no effect.
 *The key takeaway: The POLS regression likely overestimated the effect of unilateral divorce laws because it didn't control for states that already had higher divorce rates.
+*We also note that the DinD estimate that is found when using the diff command is different from the estimate that we found when running reg div_rate POST_UNILATERAL UNILATERAL POST [aw=stpop], vce(robust). This does not worry us since both coefficients are found to be not significant at any level. We believe that this difference is due to the fact that when running the reg command we can include different types of weights and in this case we have opted to use analytical weights, whereas the diff command does not allow for weighting procedures
+
 *--------------------------------------*
 
 *------------Question 1.d--------------*
