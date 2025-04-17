@@ -183,7 +183,7 @@ tab year
 gen IMP_UNILATERAL=0
 replace IMP_UNILATERAL=1 if year>=lfdivlaw
 *regression (i)
-reg div_rate IMP_UNILATERAL i.year i.state [aw=stpop], vce(robust)
+reg div_rate IMP_UNILATERAL i.year i.state [aw=stpop], vce(cluster state)
 estimates store reg1
 outreg2 using "$filepath/tableE", ctitle (Regression Table Question E) replace dta
 *IMP_UNILATERAL: -0.055 (p=0.346)
