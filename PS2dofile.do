@@ -158,7 +158,7 @@ matrix table_1[3,1]=table_1[1,1]-table_1[2,1]
 matrix table_1[3,2]=table_1[1,2]-table_1[2,2]
 matrix table_1[3,3]=table_1[3,1]-table_1[3,2]
 
-matrix colnames table_1= "UNILATERAL=1" "UNILATERAL=0" "Di
+matrix colnames table_1= "UNILATERAL=1" "UNILATERAL=0" "Difference 2"
 
 matrix rownames table_1= "POST=1" "POST=0" "Difference 1"
 	
