@@ -341,17 +341,19 @@ reg div_rate IMP_UNILATERAL i.state i.year [aweight = init_stpop], vce(cluster s
 bacondecomp div_rate IMP_UNILATERAL [aweight = init_stpop] 
 graph export "$filepath/bacondecomp.png", replace
 
-/*Goodman-Bacon (2021) shows that the two way fixed effects estimate is a weighted average of all possible 2x2 DiD estimates
-Goodman-Bacon (2021 proposes a decomposition of the difference-in-differences (DiD) estimator when treatment adoption timing varies across units, that is when there is staggered adoption. 
-The main idea is that the traditional two-way fixed effects (TWFE) estimator (with state and time fixed effects in our case) can be expressed as a weighted average of all possible simpler 2x2 DiD comparisons in the data. 
+	/*Goodman-Bacon (2021 proposes a decomposition of the two-way fixed effects (TWFE) estimator when treatment adoption timing varies across units, that is when there is staggered adoption. 
+
+Goodman-Bacon (2021) shows that the two way fixed effects estimate is a weighted average of all possible 2x2 DiD estimates that is of all possible two-group, two-period DiD comparisons. 
+Each 2x2 comparison has a treatment effect estimate (β) and a  weight that reflects its influence on the overall TWFE estimate.
+
+By looking at the output of the "bacondecomp div_rate IMP_UNILATERAL [aweight = init_stpop]" we see that the overall TWFE estimate is meant to be (−0.08×0.88)+(0.53×0.093)+(−0.15×0.027)≈−0.03 which matches the regression coefficient = -0.029
+
+The graph plots on the x-axis the weight each 2x2 estimate gets in the TWFE regression and on the y-axis the actual 2x2 DiD estimate. The dashed line shows the overall DiD estimate (-0.0298609), i.e., the average treatment effect estimated by your TWFE regression.
+
+All weights here are positive, as confirmed by both the output and the plot (therefore there is no issue of negative weights). However, the problem here is that the largest weight (88%) is associated to a negative estimate (-0.08) from  treated vs. never-treated comparisons, which pulls the overall DiD coefficient downward. Unlike in De Chaisemartin & d'Haultfoeuille (2020), the problem here isn't negative weights but heavily weighted negative 2x2 estimates.
+
+The potential prpblem here is still that the effect of treatment could change as time passes: maybe immediately after treatment, there's a boost, but then the effect could diminish, reverse, or accumulate over time.
 */
-
-*the graph plots on the x-axis the weight each 2x2 estimate gets in the TWFE regression and on the y-axis the actual 2x2 DiD estimate. The dashed line shows the overall DiD estimate (-0.0298609), i.e., the average treatment effect estimated by your TWFE regression.
-
-*the most influential 2x2 Difference-in-Differences are the ones determined by the "never treated vs timing". we also see this in the Bacon Decomposition output: most of the weight (88%/0.8800) is coming from comparisons between treated units and never-treated units. These comparisons produce a negative estimate (−0.084), which could drive the overall DiD estimate downward.
-
-*regarding negative weight, there is no evidence of issues with negative weights in the graph 
-*Goodman-Bacon (2021) explains that when treatment effects do not change over time,TWFEDD all weights are positive. Negative weights only arise when average treatment effects vary overtime.
 
 *------------Question 1.i--------------*
 *--------------------------------------*
