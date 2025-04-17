@@ -294,7 +294,7 @@ replace IMP_UNILATERAL=1 if year>=lfdivlaw
 reg div_rate IMP_UNILATERAL i.state i.year [aweight = init_stpop], vce(cluster state)
 
 bacondecomp div_rate IMP_UNILATERAL [aweight = init_stpop] 
-graph export "$output/graphs/bacondecomp.png", replace
+graph export "$filepath/graphs/bacondecomp.png", replace
 
 /*Goodman-Bacon (2021) shows that the two way fixed effects estimate is a weighted average of all possible 2x2 DiD estimates
 Goodman-Bacon (2021 proposes a decomposition of the difference-in-differences (DiD) estimator when treatment adoption timing varies across units, that is when there is staggered adoption. 
