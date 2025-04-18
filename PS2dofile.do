@@ -420,6 +420,22 @@ outreg2 using "$filepath/tableI", ctitle (Regression Table Question I) append dt
 
 use "$filepath/tableI_dta", replace
 export excel using "$filepath/table_I", replace
+
+/*	 doing an event study allows us to look at the dynamic effect of treatment over time which is somethin that a simple single-coefficient analysis cannot capture. 
+
+	Through the event study, we can see the pre-treatment trends (that is the leads from D_m10 to D_m2): by lookin at the coefficients of the lead dummies, which are statistally insignificant, and of magnitude close to 0, we have no evidence of pre-trends. Divorce rates were not systematically different in states before the adoption of unilateral divorce laws. This is a good sign as it supports the parallel trend assumption that is required for the validity of our estimates. The claim above is true for all specifications that is the baseline one (i), the one including linear state-time trends (ii) and the one including both linear and squared state-time trends. The fact that leads stay insignificant even after adding state-specific linear/quadratic trends strengthens the claim that the parallel trends assumption holds. If pre-trends had appeared when adding linear and squared state-year trends, it would have suggested the baseline model had missed underlying divergences between states.
+
+By looking at the lags we can study Dynamic Treatment Effects.
+In the baseline model, that is the one in (i), we can distinguish between short-run treatment effects, medium run treatment effects and long run treatment effects. 
+We find an increase in the divorce rates immediately after the implementation of the unilateral divorce laws: coefficients on D_p1 and D_p2 are statistically significant and of large magitude. The following coefficients shrink and turn to negative, although they are statically insignificant, possibly suggesting a declining effect after the first initial surge. However from D_p11 to D_p15, so in the "long-run", we find a re-surge in the form of strong negative effects as coefficients become large and statistically significant.
+The single-coefficient analysis would have averaged the short-run surge with the medium and long run effects, thus leading to a potentially misleading coefficient.
+
+With the inclusion of state-specific linear time trends (ii) and state-specific quadratic time trends (iii), we can increase the precision of our model. Crucially, with the inclusion of state-specific time trends, long run treatment effects disappear: the coefficients on D_p11 to D_p15 shrink and lose significance. This suggests that the negative long run effects we had found in the baseline specification (i) were partly driven by underluing trends in divorce rates in the states that adopted unilaternal divorce laws. 
+
+The specifications with state-specific linear time trends (ii) and state-specific quadratic time trends (iii) align with the results of Wolfers (2006). Wolfers (2006) found short run increase in divorce rates and a stabilization in the long run. 
+
+*/
+
 *--------------------------------------*
 
 *------------Question 1.j--------------*
