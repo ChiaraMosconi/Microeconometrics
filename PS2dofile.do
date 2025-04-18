@@ -508,6 +508,28 @@ coefplot matrix(C[1]), se(C[2]) keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_
 graph export "$filepath/plot_Ql3.png", replace
 
 
-*are your results consistent with the ones from the original paper? Briefly explain what kind of correction your proposed algorithm is performing.*
 
+/*
+The results are in line with the results of Wolfers (2006) (i.e. the results that  unilateral divorce spiked following the adoption of unilateral divorce laws, but that this rise largely reversed itself within a decade), but they are also consistent with the analysis we presented in the answer to question I. 
+As before we find 
+- no evidence of pre-treatment trends across (i), (ii) and (iii)
+- significant positive effects in the very short-run across (i), (ii) and (iii)
+- significant negative effects in the after a decade but only in specification (i), that is when we are not taking year-state specific trends into account. However, these significant negative effects disappear once we include `state_timetrend' `state_timetrend_sq'
+
+
+The algorithm proposed by, which is behind the eventstudyinteract command is the following:
+(1) estimate the CATT (cohort average treatment effect on the treated ) 
+- at this step we estimate cohort-specific effects (by including interactions between relative time indicators and cohort indicators)
+- For example it creates an interaction D_p1#cohortyeart which captures the effect 1 year after treatment specifically for states treated in year t and it can create an interaction D_p1#cohortyeart+5 captures the effect 1 year after treatment for states treated in year t+5.
+-> this creates cohort-specific dynamic effects for each relative period (e.g., the effect 1 year after treatment for the cohort treated in year t vs. the effect 1 year after treatment for the cohort treated in year t+5).
+-> intuitively, this is meant to prevent heterogeneity invalidating our results
+
+(2) estimate the weights, which are cohort shares among cohorts that experience at least l periods of treatment relative to the initial treatment - at this step we estimate weights by computing the cohort shares for each relative period 
+- for example for the relative time period 1 year of treatment the command calculates the proportion of states in each cohort (e.g. year t adopters vs. year t+5 adopters) at that relative time
+- if for the relative time period 1 year of treatment, 70% of states were treated in year t and 30% in t+5, the weights are 0.7 and 0.3
+- these weights reflect how much each cohort contributes to the overall effect at each relative time period
+(3) take the weighted average of estimates from step (1) with weights set to the estimated cohort shares - Crucially, it only averages within the same relative period
+
+Therefore this procedure avoids mixing the effects of different relative time periods. 
+*/
 
