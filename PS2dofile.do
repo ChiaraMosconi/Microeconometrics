@@ -466,7 +466,6 @@ To address this, Wolfers extends the dataset back to 1956 and implements an even
 
 Wolfers also uses census data to examine the stock of individuals who have ever been divorced. These data show no significant long-run increase in the ever-divorced population following the legal reforms, supporting the conclusion that the policy impact was not persistent.*/
 
-
 *------------Question 1.l--------------*
 *--------------------------------------*
 ssc install avar
@@ -489,6 +488,13 @@ coefplot matrix(C[1]), se(C[2]) keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_
 				title("Dependent variable: divorce rate") xlabel(, alternate) nolabel
 graph export "$filepath/plot_Ql1.png", replace
 
+*(ii) state linear time trend
+forval i=1/51{
+	bysort state (year): gen timetrend_lin_`i'=_n if state==`i' 
+	replace timetrend_lin_`i'=0 if timetrend_lin_`i'==.
+}
+local state_timetrend timetrend_lin_*
+
 eventstudyinteract div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* [aw=stpop] , absorb(i.year i.state) cohort(lfdivlaw) covariates(`state_timetrend')  control_cohort(control_cohort) vce(cluster state)
 matrix C = e(b_iw)
 mata st_matrix("A",sqrt(diagonal(st_matrix("e(V_iw)"))))
@@ -497,6 +503,14 @@ matrix list C
 coefplot matrix(C[1]), se(C[2]) keep(D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p*) vertical yline(0) xtitle("Years after divorce reform") ytitle("Estimated effect") ///
 				title("Dependent variable: divorce rate") xlabel(, alternate) nolabel
 graph export "$filepath/plot_Ql2.png", replace
+
+*(iii) state squared time trend
+forval i=1/51{
+	bysort state (year): gen timetrend_sq_`i'=_n^2 if state==`i'
+	replace timetrend_sq_`i'=0 if timetrend_sq_`i'==.
+}
+local state_timetrend_sq timetrend_sq_*
+
 
 eventstudyinteract div_rate D_m10 D_m9 D_m8 D_m7 D_m6 D_m5 D_m4 D_m3 D_m2 D_p* [aw=stpop] , absorb(i.year i.state) cohort(lfdivlaw) covariates(`state_timetrend' `state_timetrend_sq')  control_cohort(control_cohort) vce(cluster state)
 matrix C = e(b_iw)
@@ -509,8 +523,7 @@ graph export "$filepath/plot_Ql3.png", replace
 
 
 
-/*
-The results are in line with the results of Wolfers (2006) (i.e. the results that  unilateral divorce spiked following the adoption of unilateral divorce laws, but that this rise largely reversed itself within a decade), but they are also consistent with the analysis we presented in the answer to question I. 
+/* 	The results are in line with the results of Wolfers (2006) (i.e. the results that  unilateral divorce spiked following the adoption of unilateral divorce laws, but that this rise largely reversed itself within a decade), but they are also consistent with the analysis we presented in the answer to question I. 
 As before we find 
 - no evidence of pre-treatment trends across (i), (ii) and (iii)
 - significant positive effects in the very short-run across (i), (ii) and (iii)
@@ -532,4 +545,5 @@ The algorithm proposed by, which is behind the eventstudyinteract command is the
 
 Therefore this procedure avoids mixing the effects of different relative time periods. 
 */
+
 
