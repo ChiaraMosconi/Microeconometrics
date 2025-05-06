@@ -64,7 +64,8 @@ A fuzzy RD would instead show a jump in the probability of treatment, but not a 
 
 *--------------------------------------*
 
-* (b) *
+*--------------------------------------*
+*------------Question 1.b--------------*
 
 local covariates "hischshr1520m i89 vshr_islam1994 partycount lpop1994 merkezi merkezp subbuyuk buyuk"
 
@@ -84,13 +85,12 @@ mat rownames balance = "Share Men (15-20 y.o.) with High Sch Education" "Islamic
 mat colnames balance = "MSE-Optimal Bandwidth" "RD Estimator" "p-value" "Effective Number of Observations"
 mat list balance 
 
-putexcel set "$filepath/TABLE_1.xlsx", replace
+putexcel set "$filepath/Table_1.xlsx", replace
 putexcel A1=matrix(balance), names nformat(number_d2)
 putexcel A1="Label"
 putexcel (A1:A10), overwr bold border(right thick) 
 putexcel (B1:E1), overwr bold border(bottom thick)
-
-local covariates "hischshr1520m i89 vshr_islam1994 partycount lpop1994 merkezi merkezp subbuyuk buyuk"
+*--------------------------------------*
 
 * (c) *
 // Create a mapping between variable names and their labels
