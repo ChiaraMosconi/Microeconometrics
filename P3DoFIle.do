@@ -92,13 +92,16 @@ putexcel (A1:A10), overwr bold border(right thick)
 putexcel (B1:E1), overwr bold border(bottom thick)
 *--------------------------------------*
 
-* (c) *
+*--------------------------------------*
+*------------Question 1.c--------------*
+local covariates "hischshr1520m i89 vshr_islam1994 partycount lpop1994 merkezi merkezp subbuyuk buyuk"
+
 // Create a mapping between variable names and their labels
-local hischshr1520m_label "Share Men (15-20 y.o.) with High Sch Education"
+local hischshr1520m_label "Share Men (15–20) w/ High Sch Ed"
 local i89_label "Islamic Mayor in 1989"
 local vshr_islam1994_label "Islamic vote share 1994"
 local partycount_label "N parties receiving votes 1994"
-local lpop1994_label "Log Population in 1994"
+local lpop1994_label "Log Pop 1994"
 local merkezi_label "District center"
 local merkezp_label "Province center"
 local subbuyuk_label "Sub-metro center"
@@ -108,14 +111,16 @@ foreach z in `covariates' {
     // Get the label for the current variable
     local graph_title : di "``z'_label'"
     
-    rdplot `z' x , graph_options(title("`graph_title'-X discontinuity") legend(off) name(`z'_X, replace)) 
+    rdplot `z' x , graph_options(title("`graph_title'-X discontinuity", size(small)) legend(off) name(`z'_X, replace)) 
 }
 
 graph combine hischshr1520m_X i89_X vshr_islam1994_X partycount_X lpop1994_X merkezi_X merkezp_X subbuyuk_X buyuk_X, ///
     title("RD Plots for Baseline Covariates") ///
     note("Discontinuity plots for all baseline covariates")
     
-graph export "$filepath/Graph_1.png", replace width(2000) height(1600)
+graph export "$filepath/Graph_1.png", replace
+*--------------------------------------*
+
 
 * (d) *
 rdrobust Y X, kernel(triangular) p(1) bwselect(mserd)
