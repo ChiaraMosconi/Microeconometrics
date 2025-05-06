@@ -34,23 +34,35 @@ if ("`user'" == "chiaramosconi") {
 
 
 *ssc install rdrobust
-*In this problem set, any rdrobust output should be reported with Conventional betas and standard errors.
 *ssc install rddensity
 *ssc install lpdensity
+
+*In this problem set, any rdrobust output should be reported with Conventional betas and standard errors.
+*Hint: Unless asked otherwise, use as default options for your rdrobust estimates:
+*kernel(triangular) p(1) bwselect(mserd)
 
 *----------------------------------------------------------------*
 **************************---QUESTION 1---************************
 *----------------------------------------------------------------*
 
 use "$filepath/pset_3", clear
-
 describe
 
+*Before estimating our treatment effect, we ought to perform a set of diagnosis tests: (T1) show that a discontinuity in treatment exists at our cutoff; (T2) show that discontinuities in other covariates or pre-determined variables do not exist at our cutoff; (T3) test for the null hypothesis that the density of our running variable does not exhibit a discontinuity at the cutoff; (T4) show that discontinuities in our running variable and outcomes do not exist away from our cutoff.
+
+*--------------------------------------*
+*------------Question 1.a--------------*
+*(T1) show that a discontinuity in treatment exists at our cutoff
 rdplot T X, graph_options(title(Islamic Mayor-Islamic Vote discontinuity plot) ytitle(treatment variable) xtitle(running variable) legend(off)) 
 graph rename exercise_1a, replace
 graph export exercise_1a.pdf, replace
 
-/* From the graph we can observe a discontinuity in treatment at the cutoff. This type of design is a sharp RDD as the treatment status is a deterministic discontinuous function of the relevant running variable. For instance, when T is below the zero cutoff, we observe D=0, while if T is above the zero cutoff, we observe D=1. The assignment follows a deterministic rule. In practice, there is unitary probability of having an Islamic mayor in 1994 (T) when the Islamic vote margin in the same year (X) is above zero. */
+/* From the graph we can observe a discontinuity in treatment at the cutoff running variable = 0. 
+This is a sharp design as the probability of receiving treatment changes from 0 to 1 at the cutoff of the running variable. 
+In practice, at the at the cutoff value of 0 (i.e. where the Islamic party just wins or loses), the treatment variable jumps from 0 to 1. When the vote margin is less than 0 (Islamic party loses), the treatment is 0. When the vote margin is greater than 0 (Islamic party wins), the treatment is 1.
+A fuzzy RD would instead show a jump in the probability of treatment, but not a deterministic shift: the treatment probability would increase at the 0 cutoff but would not go from 0 to 1.*/
+
+*--------------------------------------*
 
 * (b) *
 
