@@ -121,21 +121,26 @@ graph combine hischshr1520m_X i89_X vshr_islam1994_X partycount_X lpop1994_X mer
 graph export "$filepath/Graph_1.png", replace
 *--------------------------------------*
 
+*--------------------------------------*
+*------------Question 1.d--------------*
 
-* (d) *
 rdrobust Y X, kernel(triangular) p(1) bwselect(mserd)
 scalar h_left = -e(h_l)
 scalar h_right = e(h_r)
 twoway (histogram X if X >=h_left & X < 0, freq width(1) color(eltblue)) ///
          (histogram X if X >= 0 & X <= h_right, freq width(1) color(sienna) xline(0, lcolor(black) lpattern(solid))), xlabel(-30(10)30) name(hist_1, replace) ///
       graphregion(color(white)) xtitle(Score) ytitle(Number of Observations) legend(off) 
+graph export "$filepath/hist_1.png", replace
 
 
 local h_l = h_left
 local h_r = h_right
 rddensity X, plot plot_range(`h_l' `h_r') graph_opt(name(hist_2, replace) legend(off) xline(0, lcolor(black) lpattern(solid)) xtitle(Score) ytitle(Density))
+graph export "$filepath/hist_2.png", replace
+
 graph combine hist_1 hist_2
 graph export "$filepath/Graph_2.png", replace
+*--------------------------------------*
 
 * (e) *
 rddensity X, plot all
