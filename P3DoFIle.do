@@ -145,9 +145,12 @@ graph export "$filepath/Graph_2.png", replace
 * (e) *
 rddensity X, plot all
 
-/* Rddensity is a test to provide evidence for or against the presence of a discontinuity in our running variable X's density at the zero cutoff as  proposed in Cattaneo, Jansson and Ma (2020). The credibility of regression discontinuity design is linked to a presumed as-good-as-random assignment to treatment near cutoff, which makes the individuals just above and below the zero cutoff credile counterfactuals. For this reason, random assignment near cutoff requires the absence of manipulation of the running variable near cutoff. 
-In this case, the null hypothesis of "NO manipulation" is that the density of the running variable is "continuous" at the cutoff. For a valid RD design, we should not have any discontinuity - as it hints for a manipulation of the RD design. Fortunatly, and pointing towards the validity of RD design, we do not reject the null hypothesis using the robust betas, since the manipulation test is T=-1.3937 with an associated p-value of 0.1634. Hence, there is evidence in favor of random assignment at cutoff. 
-However, using conventional betas, the manipulation test is T=-2.445 and the associated p-value of 0.0145 would lead to the rejection of the null at the 5% level. This would invalidate the RD design. Additionally, for a viusal check we plotted the associated graph of the test. From the latter, we can see that the two confidence intervals overlap at the cutoff. This is further graphical evidence in favor of the absence of manipulation. */ 
+/* The rddensity command tests for a discontinuity in the density of the running variable X at the cutoff (zero), following the methodology proposed by Cattaneo, Jansson, and Ma (2020). In a valid regression discontinuity (RD) design, treatment assignment near the cutoff should be as good as random, making the individuals just above and below the zero cutoff credile counterfactuals. This implies that the distribution of the running variable should be smooth and continuous around the cutoff, with no signs of manipulation.
+We test the null hypothesis of no manipulation, which implies continuity in the density of X at the cutoff. Using robust bias-corrected estimates, the test yields a test statistic of T=−1.3937 and a p-value of 0.1634. Since this p-value is above conventional significance levels, we fail to reject the null hypothesis, providing evidence of random assignment at the cutoff and supporting the validity of the RD design.
+However, when using conventional estimates, the test statistic is T=−2.445 with a p-value of 0.0145. This would lead to rejection of the null at the 5% level, suggesting possible manipulation and undermining the RD design.
+
+To complement the statistical results, we also examine the density plot. The visual inspection shows that the confidence intervals on either side of the cutoff overlap, offering additional graphical evidence in favor of continuity and the absence of manipulation. */
+
 
 
 * (f) *
@@ -178,7 +181,13 @@ rdrobust Y X, c(5)
 *conventional p-value: 0.447 ; robust p-value: 0.462
 restore
 
+/* As a robustness check, we test for potential discontinuities in the outcome variable at several placebo cutoffs away from the actual threshold. The absence of significant discontinuities at these alternative points supports the credibility of the RD design by reinforcing the assumption that any observed effect at the true cutoff is not driven by spurious patterns in the data.
 
+Using both conventional and robust p-values, we find no statistically significant discontinuities at the -5, 5, and 10 cutoffs, with all p-values well above the 10% significance level. This suggests no evidence against the null hypothesis of continuity at these placebo thresholds.
+
+However, at the -10 cutoff, we initially reject the null using conventional (p = 0.003) and robust (p = 0.006) methods, which could be interpreted as problematic. Upon closer examination using a more robust testing procedure—where observations from the opposite treatment group are dropped—the p-values increase substantially (p = 0.157 conventional; p = 0.295 robust), indicating that the earlier rejection may have been due to contamination from treated observations. With this adjustment, the null hypothesis of no discontinuity is no longer rejected, supporting the validity of the RD design.
+ */
+ 
 * (g) *
 rdplot Y X, nbins(20 20) binselect(es) graph_options(title("RD plot") ytitle(Outcome) xtitle(Running Variable) graphregion(color(white)) legend(off))
 graph export "$filepath/RDplot_Y_X.pdf", replace
@@ -192,7 +201,11 @@ rdrobust Y X, p(1) kernel(tri) bwselect(mserd)
 ereturn list
 scalar  opt_i=e(h_l)
 
-/* Electing a mayor from an Islamic party has a statistically significant effect on the educational attainment of women at the 10% level for all specifications. Note that p-values increase from uniform to trinagular kernel, and from conventional to robust. In particular, employing different kernels has a minor effect on the magnitude of the coefficients (triangular kernel is 3% smaller than uniform kernel). Hence, results are robust to different kernel choices. In particular, having an Islamic mayor in 1994 increases the share of women aged 15-20 with high-school education by 3.20 percentage points (using uniform kernel) or 3.02 percentage points (using triangular kernel). */
+/* We examine the effect of electing a mayor from an Islamic party on women's educational attainment using a local linear regression approach with different kernel and bandwidth choices.
+
+The results show a statistically significant impact at the 10% level across all specifications. When using a uniform kernel, the estimated effect is 3.20 percentage points, with a conventional p-value of 0.018 and a robust p-value of 0.041. With a triangular kernel, the estimate is slightly lower at 3.02 percentage points, and the p-values rise slightly (0.034 conventional, 0.076 robust), though still within the bounds of statistical significance at the 10% level.
+
+These findings suggest that the choice of kernel has a minor effect on the estimated magnitude (the triangular kernel produces an estimate roughly 3% smaller than the uniform kernel): electing an Islamic mayor in 1994 is associated with a meaningful increase in the share of women aged 15–20 with high school education, and the results are robust to alternative kernel choices and inference methods. */
 
 
 * (i) *
@@ -265,9 +278,12 @@ scalar difference = intercept_right - intercept_left
 scalar list difference
 rdrobust Y X, kernel(triangular)
 
-/* A global approach to sharp RDD estimation requires to use the full sample and run a regression of the outcome on a constant, while adding a higher-order polynomial (in this case, of order 4). The limitation of this method is that it gives large weights to points far from the discontiunity, and estimates are sensitive to the degree of polynomial fitted. For this reason, it is often preferrable to use a local approach and restrict the sample to an optimal bandwith, and employ a linear polynomial. Such local linear regressions are run above and below the cutoff, and the treatment effect is identified by the difference between the two intercepts. In this case, the treatment effect identified by the difference is 3.06. This means that having an Islamic mayor in 1994 increases the share of women aged 15-20 with high-school education by 3.06 percentage points. 
+/* A global approach to sharp Regression Discontinuity Design (RDD) estimation involves using the full sample and regressing the outcome on a constant and a higher-order polynomial of the running variable — here, a 4th-degree polynomial. While this method captures broader trends, it tends to assign excessive weight to observations far from the cutoff and can yield results that are highly sensitive to the chosen polynomial degree. Due to these limitations, a local approach may be preferable, focusing on observations within an optimal bandwidth around the cutoff and using a linear polynomial.
 
-This is different from the estimate reported in (h) using the triangular kernel (3.02). In fact, to replicate rdrobust estimates under triangular kernels, we need to estimate WLS incorporating the relevant weights, computed through the trinagular kernel formula. Using such procedure yields a difference estimate of 3.02, which is identical to the one in (h), hence holding an equivalent interpretation. */
+In the local linear regression framework, separate regressions are run on either side of the cutoff, and the treatment effect is identified by the difference in intercepts. In our case, this approach yields an estimated effect of 3.06 percentage points, indicating that electing an Islamic mayor in 1994 increased the proportion of women aged 15–20 with a high school education by that amount.
+
+This estimate differs slightly from the 3.02 percentage point effect reported in section (h), which was obtained using rdrobust with a triangular kernel. To replicate the rdrobust result, one must implement a weighted least squares (WLS) regression incorporating weights derived from the triangular kernel function. Doing so produces an estimate of 3.02, perfectly matching the rdrobust output and confirming the equivalence of the two approaches under appropriate weighting. */
+
 
 * (k) *
 rdrobust Y X, kernel(tri) p(1) bwselect(mserd)
@@ -302,7 +318,8 @@ preserve
 restore
 
 
-/* From this graph it is possible to see that our coefficients do not significantly vary. This is a sign that the RD design is robust to different bandwidth choices. Yet, we do need a bandwith that exceeds 17.239937 to yield statistically significant estimates i.e. identify a significant jump. The underlying idea is that for large enough bandwiths, we increase the number of observations, decreasing the variance and the standard errors, hence shrinking the confidence interval. */
+/* The graph shows that the estimated treatment effects remain stable across different bandwidths, suggesting the RD design is robust to bandwidth selection. Statistical significance, however, is only achieved when the bandwidth exceeds 17.24, indicating that a larger bandwidth is needed to detect a significant effect.This outcome reflects a common bias-variance trade-off in RD estimation: increasing the bandwidth includes more observations, which reduces variance and standard errors, thereby narrowing the confidence intervals at the cost of potentially introducing bias, as observations farther from the cutoff may be less comparable.
+In this case, the consistency of the point estimates across bandwidths and the gain in statistical precision with larger bandwidths indicate that the results are both stable and statistically robust when a sufficient number of observations is included. */
 
 *----------------------------------------------------------------*
 **************************---QUESTION 2---************************
