@@ -358,6 +358,7 @@ rdrobust T X, kernel(triangular) p(1) bwselect(mserd)
 
 rdrobust T X, kernel(triangular) p(4) bwselect(mserd)
 
+*we replicate here Gonzalez analysis using as running variable the distance from coverage, measured using a proxy for longitude
 *** Using Y1 
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
 outreg2 using "$filepath/TABLE_1.tex", ctitle(Ratio of compromised votes) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
