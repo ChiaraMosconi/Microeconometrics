@@ -336,6 +336,8 @@ replace X= - _dist if cov == 0
 gen T=cov
 label variable T "Coverage dummy"
 
+/*As reported in Gonzalez (2021), "Distance to boundary" refers to the distance between a polling center and the closest point in the cell phone coverage boundary. "Negative" values of distance give the distance of polling centers/villages in non- coverage areas.*/
+
 gen Y_1 = vote_comb
 label variable Y_1 "Share of votes under Category C fraud"
 gen Y_2 = vote_comb_ind
@@ -347,6 +349,7 @@ graph export "$filepath/RDplot_T_X_p(4).pdf", replace
 rdplot T X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )" ytitle("T (cell phone coverage)"))legend(off))
 graph export "$filepath/RDplot_T_X_p(1).pdf", replace
 
+/*we plotted the treatment variable used at Gonzalez (2021) as a function of the running variable according to different functional forms. In particular we tried fitting a 1st, 2nd, 3rd and 4th degree polynomial, finding that the 4th degree polynomial was the best fit.*/
 
 *** Using Y1
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
@@ -384,9 +387,29 @@ Several potential challenges to the validity of this design have been recognized
 
 To tackle these challenges, Gonzalez's (2021) study meticulously investigates these various potential biases. Initially, the section confirms the presence of selection bias into coverage areas but finds no noticeable impact on the alteration in fraudulent activities at the coverage boundary. Moreover, there is no evidence suggesting that mobile coverage spillovers or spatial displacement of frauds affect the estimates. Concerning unaccounted-for mobile service providers, which might underestimate the main results' coverage effect, the authors show that adjusting for this missing data does not significantly change the estimates. Regarding cell tower shutdowns, potentially linked to increased violence and Taliban operations, their impact on election-day coverage is explored. However, excluding provinces with the highest violence rates does not lead to any significant alteration in results. Finally, the study examines the sensitivity of results to minor shifts in coverage area boundaries due to environmental factors, finding no meaningful sensitivity to such variations. However, it acknowledges that the presence of such variations should prompt an ITT-like interpretation of their sharp RD output. Under a fuzzy design, though, the impact of such slight oscillations in the coverage boundary is different. Our instrumental variable estimates have a probability limit inversely related to first stage strength. Instead, the causal parameter of interest is inversely related to the covariance between our instrument (position relative to the threshold) and actual coverage. If the coverage dummy reflects coverage under standard environmental conditions, and on election day coverage can randomly deviate from its standard perimeter, then actual coverage is noisier and more weakly related to the boundary than the coverage dummy, leading to coefficients that systematically underestimate the parameter of interest. */
 
+/*
+Which assumptions must hold in order for the one-dimensional RD estimates of Gonzalez (2021) to be valid?
+
+The key assumptions required for the validity of the one-dimensional RD estimates are:
+
+(1) smooth potential outcomes: potential outcomes should vary smoothly and any discontinuity at the treatment boundary (distance = 0) should solely reflect the treatment effect
+
+In the context of the Gonzalez (2021) estimates, polling center elevation, slope, and distance to the closest primary road are exceptions to the smooth potential outcomes assumption: this is because cell phone coverage is dependent on geographic features such as changes in elevation and slope and ruggedness of the terrain. In spite of these observed and significant changes of baseline characteristic across the boundary, robustness checks show that the main RD results in obtained in the paper are not sensitive to the inclusion of these covariates
+
+(2) no manipulation: there must be no strategic sorting 
+	- polling stations/ villages cannot have been placed deliberately "just inside" or "just outside" coverage in anticipation of the election. -> the authors 		perform Cattaneo, Jansson, and Ma's (2019) test for breaks in the density of the forcing variable at the boundary and find no evidence of endogenous assignment/sorting near the boundary
+	- since the locaton of the centers was determined entirely by the UN-led IEC, it is unlikely that corrupt candidates were able to manipulate the assignment process
+	
+(3) every neighborhood should offer both treated and control units for comparison​​ (boundary positivity) / the authors restrict the sample to only neighborhoods with at least one polling center on each side of the coverage boundary i.e. they drop any boundary segments with polling centers on only one side of the coverage boundary
+
+(4) SUTVA/no spillovers 
+
+*/
 
 *(b)*
-/* The additional results section of Gonzalez (2021) delves into scenarios where the proposed geographic boundary may not precisely determine mobile coverage on election day, such as potential fraud/coverage spillover effects near the boundary and changes in the boundary's shape due to shifting environmental conditions. The latter scenario isn't ruled out in Gonzalez's framework, implying that it doesn't entirely invalidate their sharp RD design. Instead, it suggests interpreting the estimates as intent-to-treat coefficients, estimating the direct effect of the boundary as a treatment proxy on the outcome variable. Obtaining actual fuzzy RD estimates directly isn't feasible due to missing data on coverage on election day, rendering the first stage coefficient unattainable. Recognizing this fuzziness in the boundary, adding further noise due to imperfect longitude measurement doesn't necessarily demand a design shift. This noise could be seen as an additional imperfection in predicting treatment, exacerbating existing fuzziness and diminishing first stage strength. However, since first stage estimates couldn't be acquired initially, this doesn't impact the research design. Consequently, the intent-to-treat interpretation of the sharp estimates remains feasible, but they are expected to be noisier, as additional exogenous variation induced by coverage might not be captured by the available proxy. Another approach to preserving a sharp design would be if the coverage boundary were unidimensional, extending from west to east, so that only differences in latitude determine whether a polling station falls within or outside the coverage area, rendering measurement error inconsequential. */
+/*
+In a sharp regression discontinuity (RD) design, treatment assignment must be a deterministic function of a running variable. In the specific case in which we have a proxy for longitude, the way to keep a sharp design would be to have a unidimensional treatment boundary, extending strictly from west to east, i.e. the treatment boundary should depend only on latitude. In that case, the running variable can be defined as runvar = latitude – φ₀, and longitude plays no role. Any measurement error due to noisy longitude data is thus irrelevant and cannot cause misclassification, preserving the sharp RD structure. González (2021) confirms this with falsification tests using latitude-only cut-offs: because only latitude matters, mismeasured longitude does not affect treatment assignment, and estimated discontinuities vanish.
+*/
 
 *(c)*
 	
