@@ -358,39 +358,39 @@ rdrobust T X, kernel(triangular) p(1) bwselect(mserd)
 
 rdrobust T X, kernel(triangular) p(4) bwselect(mserd)
 
-
 *** Using Y1 
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
 outreg2 using "$filepath/TABLE_1.tex", ctitle(Ratio of compromised votes) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
-rdplot Y_1 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Ratio of compromised votes)"))
+rdplot Y_1 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Ratio of compromised votes)")legend(off))
 graph export "$filepath/RDplot_Y_1_X_p(1).pdf", replace
 
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
 outreg2 using "$filepath/TABLE_1.tex", ctitle(Ratio of compromised votes) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
-rdplot Y_1 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Ratio of compromised votes)"))
+rdplot Y_1 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Ratio of compromised votes)")legend(off))
 graph export "$filepath/RDplot_Y_1_X_p(4).pdf", replace
 
 *** Using Y2
 rdrobust Y_2 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
 outreg2 using "$filepath/TABLE_2.tex", ctitle(Share of votes under Category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
-rdplot Y_2 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)"))
+rdplot Y_2 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)")legend(off))
 graph export "$filepath/RDplot_Y_2_X_p(1).pdf", replace
 
 rdrobust Y_2 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
 outreg2 using "$filepath/TABLE_2.tex", ctitle(Share of votes under Category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
-rdplot Y_2 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)"))
+rdplot Y_2 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)")legend(off))
 graph export "$filepath/RDplot_Y_2_X_p(4).pdf", replace
 
 *** Using Y3
 rdrobust Y_3 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
 outreg2 using "$filepath/TABLE_3.tex", ctitle(At least one station with category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
-rdplot Y_3 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)"))
+rdplot Y_3 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
 graph export "$filepath/RDplot_Y_3_X_p(1).pdf", replace
 
 rdrobust Y_3 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
 outreg2 using "$filepath/TABLE_3.tex", ctitle(At least one station with category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
-rdplot Y_3 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)"))
+rdplot Y_3 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
 graph export "$filepath/RDplot_Y_3_X_p(4).pdf", replace
+
 
 
 /* Our empirical strategy differs slightly from the sharp RD design in González (2021) because we allow for some measurement error in longitude, which affects how we calculate the distance of polling stations from the mobile coverage boundary—the running variable. If this error is random and unrelated to the true location, it means some polling stations that are actually outside the coverage area might appear inside it, and vice versa. As a result, the probability of treatment increases discontinuously at the boundary but no longer jumps from zero to one, producing a fuzzy RD design rather than a sharp one. This fuzziness is clearly illustrated in Figure 1, which plots the probability of treatment T (cell phone coverage) against distance X from the coverage boundary. While there is a visible jump at X=0, the transition is imperfect: some polling stations just below the threshold are covered, and some just above are not, violating the core assumption of a sharp RD design. 
