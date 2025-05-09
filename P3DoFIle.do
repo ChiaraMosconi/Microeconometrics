@@ -351,27 +351,12 @@ graph export "$filepath/RDplot_T_X_p(1).pdf", replace
 
 /*we plotted the treatment variable used at Gonzalez (2021) as a function of the running variable according to different functional forms. In particular we tried fitting a 1st, 2nd, 3rd and 4th degree polynomial, finding that the 4th degree polynomial was the best fit.*/
 
-*** Using Y1
-rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
-outreg2 using "$filepath/TABLE_1.tex", ctitle(Share of votes under Category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
-rdplot Y_1 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_1_X_p(1).pdf", replace
+*** Using T
+rdrobust T X, kernel(triangular) p(1) bwselect(mserd)
 
-rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
-outreg2 using "$filepath/TABLE_1.tex", ctitle(Share of votes under Category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
-rdplot Y_1 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_1_X_p(4).pdf", replace
+rdrobust T X, kernel(triangular) p(4) bwselect(mserd)
 
-*** Using Y2
-rdrobust Y_2 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
-outreg2 using "$filepath/TABLE_2.tex", ctitle(At least one station with category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
-rdplot Y_2 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_2_X_p(1).pdf", replace
 
-rdrobust Y_2 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
-outreg2 using "$filepath/TABLE_2.tex", ctitle(At least one station with category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
-rdplot Y_2 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_2_X_p(4).pdf", replace
 
 /* Our analysis deviates slightly from Gonzalez (2021)'s sharp RD design by introducing some noise in the measurement of longitude, which influences the distance of polling stations from the coverage boundary, our running variable. Assuming this noise is random and orthogonal to the actual distance, there's a chance that a station outside the coverage area may be measured as within it, and vice versa. This creates a fuzzy threshold at the coverage boundary, increasing the probability of treatment discontinuously but not entirely determining it. The imperfect correlation between treatment assignment and measured position relative to the boundary is reflected in negative distance variable measures in our data and in our plot of propensity score estimates against distance from the boundary. Therefore, we use a fuzzy RD design, akin to local Wald estimation using the threshold as an instrument for treatment assignment, to consistently identify the causal effect of mobile coverage on fraudulent voting, given certain assumptions.
 
