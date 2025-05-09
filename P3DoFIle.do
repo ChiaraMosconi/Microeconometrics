@@ -387,7 +387,7 @@ In a sharp regression discontinuity (RD) design, treatment assignment must be a 
 *(c)*
 	
 *** Optimal bandwidth
-foreach var in 600 95 ecc comb comb_ind {
+foreach var in comb comb_ind {
 		rdbwselect vote_`var' X if ind_seg50==1, vce(cluster segment50)
 		scalar hopt_`var'=e(h_mserd)
 		forvalues r=1/2 {
@@ -399,8 +399,8 @@ foreach var in 600 95 ecc comb comb_ind {
 xtset, clear
 xtset segment50 pccode
 
-*table_onedim_results
-/*foreach var in /*600 95 ecc*/ comb_ind comb {	
+*we first calculate the point estimates following table_onedim_results
+foreach var in comb_ind comb {	
 	* All regions
 	xtreg vote_`var' cov##c.(dist) if ind_seg50==1 & dist<=hopt_`var', fe robust 
 		est store col1_a_`var'
@@ -416,16 +416,12 @@ xtset segment50 pccode
 		est store col1_c_`var'
  }
 
- 
- 
- 
-*codice dei ragazzi
 
+*we also calculate the point estimates following the IV strategy used in the RDD slides, both using treatment as instrument and interacting it with the X variable.
 *** Local Linear Regression
 gen instrument_T=0
 replace instrument_T=1 if X>0
 gen interaction=T*X
-label variable interaction "Interaction between coverage dummy and outcome variable"
 gen instrument_interaction=X*instrument_T
 
  
@@ -466,7 +462,7 @@ foreach var in comb_ind comb {
 	xtivreg vote_`var' (T interaction = instrument_T instrument_interaction) X if ind_seg50==1 & _dist<=hopt_`var'_2 & region2==2, fe vce(robust)
 		est store col1_c2_`var'
 	
- }*/
+ }
 
 /* The coefficients linked to the proportions of votes affected by fraud, or the likelihood of fraud in individual polling centers, vary when calculated using optimal bandwidth selection compared to those derived from global fitting. Specifically, our coefficients lose in statistical significance. This decline in significance in the optimal bandwidth estimation can be explained by two main factors: 
 •	Transitioning from a global to a local regression can significantly reduce the number of observations, leading to decreased precision and consequently higher standard errors. This increase in standard errors may diminish the significance of our coefficients.
