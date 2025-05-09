@@ -358,7 +358,11 @@ rdrobust T X, kernel(triangular) p(1) bwselect(mserd)
 
 rdrobust T X, kernel(triangular) p(4) bwselect(mserd)
 
-*we replicate here Gonzalez analysis using as running variable the distance from coverage, measured using a proxy for longitude
+
+/* Our empirical strategy differs slightly from the sharp RD design in González (2021) because we allow for some measurement error in longitude, which affects how we calculate the distance of polling stations from the mobile coverage boundary—the running variable. If this error is random and unrelated to the true location, it means some polling stations that are actually outside the coverage area might appear inside it, and vice versa. As a result, the probability of treatment increases discontinuously at the boundary but no longer jumps from zero to one, producing a fuzzy RD design rather than a sharp one. This fuzziness is clearly illustrated in Figure 1, which plots the probability of treatment T (cell phone coverage) against distance X from the coverage boundary. While there is a visible jump at X=0, the transition is imperfect: some polling stations just below the threshold are covered, and some just above are not, violating the core assumption of a sharp RD design. 
+We formally assess this discontinuity using polynomial regression (1st and 4th degree) with the rdrobust command, treating coverage status as the outcome and distance as the running variable. The estimation results show a small but positive discontinuity in treatment probability at the boundary (τ =0.1126 s.e.=0.056 for p(1), τ =0.052 s.e. = 0.055 for p(4)), which is statistically significant at 95% level with p(1), but insignificant with p(4)(p = 0.344). The robust z-score (0.717) and wide confidence intervals further reinforce the imprecision. These results confirm that treatment is not deterministically assigned at the cutoff, violating the sharp RD assumption./*
+
+*we replicate here Gonzalez analysis through a fuzzy RD design, using as running variable the distance from coverage, measured using a proxy for longitude.
 *** Using Y1 
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
 outreg2 using "$filepath/TABLE_1.tex", ctitle(Ratio of compromised votes) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
@@ -392,10 +396,6 @@ outreg2 using "$filepath/TABLE_3.tex", ctitle(At least one station with category
 rdplot Y_3 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
 graph export "$filepath/RDplot_Y_3_X_p(4).pdf", replace
 
-
-
-/* Our empirical strategy differs slightly from the sharp RD design in González (2021) because we allow for some measurement error in longitude, which affects how we calculate the distance of polling stations from the mobile coverage boundary—the running variable. If this error is random and unrelated to the true location, it means some polling stations that are actually outside the coverage area might appear inside it, and vice versa. As a result, the probability of treatment increases discontinuously at the boundary but no longer jumps from zero to one, producing a fuzzy RD design rather than a sharp one. This fuzziness is clearly illustrated in Figure 1, which plots the probability of treatment T (cell phone coverage) against distance X from the coverage boundary. While there is a visible jump at X=0, the transition is imperfect: some polling stations just below the threshold are covered, and some just above are not, violating the core assumption of a sharp RD design. 
-We formally assess this discontinuity using polynomial regression (1st and 4th degree) with the rdrobust command, treating coverage status as the outcome and distance as the running variable. The estimation results show a small but positive discontinuity in treatment probability at the boundary (τ =0.1126 s.e.=0.056 for p(1), τ =0.052 s.e. = 0.055 for p(4)), which is statistically significant at 95% level with p(1), but insignificant with p(4)(p = 0.344). The robust z-score (0.717) and wide confidence intervals further reinforce the imprecision. These results confirm that treatment is not deterministically assigned at the cutoff, violating the sharp RD assumption./*
 
 /*Which assumptions must hold in order for the one-dimensional RD estimates of Gonzalez (2021) to be valid?
 
@@ -452,6 +452,35 @@ foreach var in comb_ind comb {
 		est store col1_c_`var'
  }
 
+**Tabella xtreg
+
+mat results = J(6, 3, .)
+
+* Loop over models
+local i = 1
+foreach est in col1_a_comb col1_b_comb col1_c_comb col1_a_comb_ind col1_b_comb_ind col1_c_comb_ind{
+    est restore `est'
+    mat results[`i', 1] = _b[1.cov]
+    mat results[`i', 2] = _se[1.cov]
+    mat results[`i', 3] = e(N)
+    local i = `i' + 1
+}
+
+* Add valid row/col names
+mat rownames results = Share_all  Share_southeast Share_northwest Atleastone_all Atleastone_southeast Atleastone_northwest
+mat colnames results = Coefficient Std_Err N
+
+* Export to Excel
+putexcel set "$filepath/Table_Results.xlsx", replace
+putexcel A1=matrix(results), names nformat(number_d3)
+
+* Optional formatting
+putexcel A1="Model"
+putexcel (A1:A7), overwr bold border(right thick)
+putexcel (B1:D1), overwr bold border(bottom thick)
+
+* Optional pretty column headers
+putexcel B1="Coefficient" C1="Std. Err."
 
 *we also calculate the point estimates following the IV strategy used in the RDD slides, both using treatment as instrument and interacting it with the X variable.
 *** Local Linear Regression
@@ -480,6 +509,34 @@ foreach var in comb_ind comb {
 	
  }
 
+mat results = J(6, 3, .)
+
+* Loop over models
+local i = 1
+foreach est in col1_a1_comb col1_b1_comb col1_c1_comb col1_a1_comb_ind col1_b1_comb_ind col1_c1_comb_ind{
+    est restore `est'
+    mat results[`i', 1] = _b[T]
+    mat results[`i', 2] = _se[T]
+    mat results[`i', 3] = e(N)
+    local i = `i' + 1
+}
+
+* Add valid row/col names
+mat rownames results = Share_all  Share_southeast Share_northwest Atleastone_all Atleastone_southeast Atleastone_northwest
+mat colnames results = Coefficient Std_Err N
+
+* Export to Excel
+putexcel set "$filepath/Table_Results2.xlsx", replace
+putexcel A1=matrix(results), names nformat(number_d3)
+
+* Optional formatting
+putexcel A1="Model"
+putexcel (A1:A7), overwr bold border(right thick)
+putexcel (B1:D1), overwr bold border(bottom thick)
+
+* Optional pretty column headers
+putexcel B1="Coefficient" C1="Std. Err."
+
 
 *** Adding treatment and interaction instrumented
 
@@ -499,6 +556,34 @@ foreach var in comb_ind comb {
 		est store col1_c2_`var'
 	
  }
+
+mat results = J(6, 3, .)
+
+* Loop over models
+local i = 1
+foreach est in col1_a2_comb col1_b2_comb col1_c2_comb col1_a2_comb_ind col1_b2_comb_ind col1_c2_comb_ind{
+    est restore `est'
+    mat results[`i', 1] = _b[T]
+    mat results[`i', 2] = _se[T]
+    mat results[`i', 3] = e(N)
+    local i = `i' + 1
+}
+
+* Add valid row/col names
+mat rownames results = Share_all  Share_southeast Share_northwest Atleastone_all Atleastone_southeast Atleastone_northwest
+mat colnames results = Coefficient Std_Err N
+
+* Export to Excel
+putexcel set "$filepath/Table_Results3.xlsx", replace
+putexcel A1=matrix(results), names nformat(number_d3)
+
+* Optional formatting
+putexcel A1="Model"
+putexcel (A1:A7), overwr bold border(right thick)
+putexcel (B1:D1), overwr bold border(bottom thick)
+
+* Optional pretty column headers
+putexcel B1="Coefficient" C1="Std. Err."
 
 /* The coefficients linked to the proportions of votes affected by fraud, or the likelihood of fraud in individual polling centers, vary when calculated using optimal bandwidth selection compared to those derived from global fitting. Specifically, our coefficients lose in statistical significance. This decline in significance in the optimal bandwidth estimation can be explained by two main factors: 
 •	Transitioning from a global to a local regression can significantly reduce the number of observations, leading to decreased precision and consequently higher standard errors. This increase in standard errors may diminish the significance of our coefficients.
