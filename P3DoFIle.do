@@ -153,7 +153,8 @@ However, when using conventional estimates, the test statistic is T=−2.445 wit
 To complement the statistical results, we also examine the density plot. The visual inspection shows that the confidence intervals on either side of the cutoff overlap, offering additional graphical evidence in favor of continuity and the absence of manipulation. */
 *--------------------------------------*
 
-* (f) *
+*--------------------------------------*
+*------------Question 1.f--------------*
 *** Baseline Test
 rdrobust Y X, c(-10) 
 *conventional p-value: 0.003 ; robust p-value: 0.006
@@ -187,7 +188,8 @@ Using both conventional and robust p-values, we find no statistically significan
 
 However, at the -10 cutoff, we initially reject the null using conventional (p = 0.003) and robust (p = 0.006) methods, which could be interpreted as problematic. Upon closer examination using a more robust testing procedure—where observations from the opposite treatment group are dropped—the p-values increase substantially (p = 0.157 conventional; p = 0.295 robust), indicating that the earlier rejection may have been due to contamination from treated observations. With this adjustment, the null hypothesis of no discontinuity is no longer rejected, supporting the validity of the RD design.
  */
- 
+ *--------------------------------------*
+
 * (g) *
 rdplot Y X, nbins(20 20) binselect(es) graph_options(title("RD plot") ytitle(Outcome) xtitle(Running Variable) graphregion(color(white)) legend(off))
 graph export "$filepath/RDplot_Y_X.pdf", replace
