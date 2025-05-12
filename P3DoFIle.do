@@ -142,7 +142,8 @@ graph combine hist_1 hist_2
 graph export "$filepath/Graph_2.png", replace
 *--------------------------------------*
 
-* (e) *
+*--------------------------------------*
+*------------Question 1.e--------------*
 rddensity X, plot all
 
 /* The rddensity command tests for a discontinuity in the density of the running variable X at the cutoff (zero), following the methodology proposed by Cattaneo, Jansson, and Ma (2020). In a valid regression discontinuity (RD) design, treatment assignment near the cutoff should be as good as random, making the individuals just above and below the zero cutoff credile counterfactuals. This implies that the distribution of the running variable should be smooth and continuous around the cutoff, with no signs of manipulation.
@@ -150,8 +151,7 @@ We test the null hypothesis of no manipulation, which implies continuity in the 
 However, when using conventional estimates, the test statistic is T=−2.445 with a p-value of 0.0145. This would lead to rejection of the null at the 5% level, suggesting possible manipulation and undermining the RD design.
 
 To complement the statistical results, we also examine the density plot. The visual inspection shows that the confidence intervals on either side of the cutoff overlap, offering additional graphical evidence in favor of continuity and the absence of manipulation. */
-
-
+*--------------------------------------*
 
 * (f) *
 *** Baseline Test
