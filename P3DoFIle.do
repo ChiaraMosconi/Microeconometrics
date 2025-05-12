@@ -30,7 +30,7 @@ if ("`user'" == "chiaramosconi") {
     global filepath "/Users/chiaramosconi/Downloads/files/"
 }
 // Set directory
-*cd "$filepath"
+cd "$filepath"
 
 
 *ssc install rdrobust
@@ -142,8 +142,7 @@ graph combine hist_1 hist_2
 graph export "$filepath/Graph_2.png", replace
 *--------------------------------------*
 
-*--------------------------------------*
-*------------Question 1.e--------------*
+* (e) *
 rddensity X, plot all
 
 /* The rddensity command tests for a discontinuity in the density of the running variable X at the cutoff (zero), following the methodology proposed by Cattaneo, Jansson, and Ma (2020). In a valid regression discontinuity (RD) design, treatment assignment near the cutoff should be as good as random, making the individuals just above and below the zero cutoff credile counterfactuals. This implies that the distribution of the running variable should be smooth and continuous around the cutoff, with no signs of manipulation.
@@ -151,10 +150,10 @@ We test the null hypothesis of no manipulation, which implies continuity in the 
 However, when using conventional estimates, the test statistic is T=−2.445 with a p-value of 0.0145. This would lead to rejection of the null at the 5% level, suggesting possible manipulation and undermining the RD design.
 
 To complement the statistical results, we also examine the density plot. The visual inspection shows that the confidence intervals on either side of the cutoff overlap, offering additional graphical evidence in favor of continuity and the absence of manipulation. */
-*--------------------------------------*
 
-*--------------------------------------*
-*------------Question 1.f--------------*
+
+
+* (f) *
 *** Baseline Test
 rdrobust Y X, c(-10) 
 *conventional p-value: 0.003 ; robust p-value: 0.006
@@ -188,8 +187,7 @@ Using both conventional and robust p-values, we find no statistically significan
 
 However, at the -10 cutoff, we initially reject the null using conventional (p = 0.003) and robust (p = 0.006) methods, which could be interpreted as problematic. Upon closer examination using a more robust testing procedure—where observations from the opposite treatment group are dropped—the p-values increase substantially (p = 0.157 conventional; p = 0.295 robust), indicating that the earlier rejection may have been due to contamination from treated observations. With this adjustment, the null hypothesis of no discontinuity is no longer rejected, supporting the validity of the RD design.
  */
- *--------------------------------------*
-
+ 
 * (g) *
 rdplot Y X, nbins(20 20) binselect(es) graph_options(title("RD plot") ytitle(Outcome) xtitle(Running Variable) graphregion(color(white)) legend(off))
 graph export "$filepath/RDplot_Y_X.pdf", replace
@@ -259,7 +257,7 @@ scalar list difference
 rdrobust Y X, kernel(triangular) p(1) bwselect(mserd)
 *difference =  3.0595105. 
 
-*** Correct approach
+*** Correct approach (triangular kernel)
 scalar h_l = -h_l
 
 gen weights_2 = .
@@ -338,7 +336,7 @@ replace X= - _dist if cov == 0
 gen T=cov
 label variable T "Coverage dummy"
 
-/*As reported in Gonzalez (2021), "Distance to boundary" refers to the distance between a polling center and the closest point in the cell phone coverage boundary. "Negative" values of distance give the distance of polling centers/villages in non- coverage areas.*/
+/*As reported in Gonzalez (2021), "Distance to boundary" refers to the distance between a polling center and the closest point in the cell phone coverage boundary. "Negative" values of distance give the distance of polling centers/villages in non-coverage areas.*/
 
 gen Y_1= total_ecc/totalv_pc
 label variable Y_1 "Ratio of compromised votes"
@@ -352,7 +350,7 @@ graph export "$filepath/RDplot_T_X_p(4).pdf", replace
 rdplot T X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )" ytitle("T (cell phone coverage)"))legend(off))
 graph export "$filepath/RDplot_T_X_p(1).pdf", replace
 
-/*we plotted the treatment variable used at Gonzalez (2021) as a function of the running variable according to different functional forms. In particular we tried fitting a 1st, 2nd, 3rd and 4th degree polynomial, finding that the 4th degree polynomial was the best fit.*/
+/*we plotted the treatment variable used by Gonzalez (2021) as a function of the running variable according to different functional forms. In particular we tried fitting a 1st, 2nd, 3rd and 4th degree polynomial, finding that the 4th degree polynomial was the best fit.*/
 
 
 *** Using T
@@ -361,42 +359,250 @@ rdrobust T X, kernel(triangular) p(1) bwselect(mserd)
 rdrobust T X, kernel(triangular) p(4) bwselect(mserd)
 
 
-/* Our empirical strategy differs slightly from the sharp RD design in González (2021) because we allow for some measurement error in longitude, which affects how we calculate the distance of polling stations from the mobile coverage boundary—the running variable. If this error is random and unrelated to the true location, it means some polling stations that are actually outside the coverage area might appear inside it, and vice versa. As a result, the probability of treatment increases discontinuously at the boundary but no longer jumps from zero to one, producing a fuzzy RD design rather than a sharp one. This fuzziness is clearly illustrated in Figure 1, which plots the probability of treatment T (cell phone coverage) against distance X from the coverage boundary. While there is a visible jump at X=0, the transition is imperfect: some polling stations just below the threshold are covered, and some just above are not, violating the core assumption of a sharp RD design. 
+/* Our empirical strategy differs slightly from the sharp RD design in González (2021) because we allow for some measurement error in longitude, which affects how we calculate the distance of polling stations from the mobile coverage boundary—the running variable. If this error is random and unrelated to the true location, it means some polling stations that are actually outside the coverage area might appear inside it, and vice versa. As a result, the probability of treatment increases discontinuously at the boundary but no longer jumps from zero to one, producing a fuzzy RD design rather than a sharp one. This fuzziness is clearly illustrated in RDplot_T_X_p(4), which plots the probability of treatment T (cell phone coverage) against distance X from the coverage boundary. While there is a visible jump at X=0, the transition is imperfect: some polling stations just below the threshold are covered, and some just above are not, violating the core assumption of a sharp RD design. 
 We formally assess this discontinuity using polynomial regression (1st and 4th degree) with the rdrobust command, treating coverage status as the outcome and distance as the running variable. The estimation results show a small but positive discontinuity in treatment probability at the boundary (τ =0.1126 s.e.=0.056 for p(1), τ =0.052 s.e. = 0.055 for p(4)), which is statistically significant at 95% level with p(1), but insignificant with p(4)(p = 0.344). The robust z-score (0.717) and wide confidence intervals further reinforce the imprecision. These results confirm that treatment is not deterministically assigned at the cutoff, violating the sharp RD assumption.*/
+
 
 *we replicate here Gonzalez analysis through a fuzzy RD design, using as running variable the distance from coverage, measured using a proxy for longitude.
 *** Using Y1 
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
-outreg2 using "$filepath/TABLE_1.tex", ctitle(Ratio of compromised votes) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
+
+* --- First-stage (T on X) ---
+scalar coef_fs = e(tau_T_cl)
+scalar se_fs = e(se_tau_T_cl)
+scalar z_fs = coef_fs/se_fs
+
+
+* --- Treatment effect (Y_1 on T) ---
+scalar coef_te = e(tau_cl)  
+scalar se_te = e(se_tau_cl)  
+scalar z_te = coef_te / se_te  
+
+* Rounding (optional)
+foreach s in coef_fs se_fs z_fs coef_te se_te z_te  {
+    scalar `s' = round(`s', 0.00001)
+}
+
+putexcel set "$filepath/fuzzy_Y1_p(1).xlsx", replace
+
+* Write headers
+putexcel A1 = "Estimate" B1 = "Coef" C1 = "SE" D1 = "z"
+
+* First-stage (T on X)
+putexcel A2 = "First stage (T on X)" ///
+          B2 = coef_fs ///
+          C2 = se_fs   ///
+          D2 = z_fs    
+
+* Treatment effect (Y_1 on T)
+putexcel A3 = "Treatment effect (Y_1 on T)" ///
+          B3 = coef_te ///
+          C3 = se_te   ///
+          D3 = z_te
+		  
 rdplot Y_1 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Ratio of compromised votes)")legend(off))
-graph export "$filepath/RDplot_Y_1_X_p(1).pdf", replace
+graph export "$filepath/RDplot_Y1_p(1).pdf", replace
+
 
 rdrobust Y_1 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
-outreg2 using "$filepath/TABLE_1.tex", ctitle(Ratio of compromised votes) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
+
+
+* --- First-stage (T on X) ---
+scalar coef_fs = e(tau_T_cl)
+scalar se_fs = e(se_tau_T_cl)
+scalar z_fs = coef_fs/se_fs
+
+
+* --- Treatment effect (Y_1 on T) ---
+scalar coef_te = e(tau_cl)  
+scalar se_te = e(se_tau_cl)  
+scalar z_te = coef_te / se_te  
+
+* Rounding (optional)
+foreach s in coef_fs se_fs z_fs coef_te se_te z_te  {
+    scalar `s' = round(`s', 0.00001)
+}
+
+putexcel set "$filepath/fuzzy_Y1_p(4).xlsx", replace
+
+* Write headers
+putexcel A1 = "Estimate" B1 = "Coef" C1 = "SE" D1 = "z"
+
+* First-stage (T on X)
+putexcel A2 = "First stage (T on X)" ///
+          B2 = coef_fs ///
+          C2 = se_fs   ///
+          D2 = z_fs    
+
+* Treatment effect (Y_1 on T)
+putexcel A3 = "Treatment effect (Y_1 on T)" ///
+          B3 = coef_te ///
+          C3 = se_te   ///
+          D3 = z_te
+
+
 rdplot Y_1 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Ratio of compromised votes)")legend(off))
-graph export "$filepath/RDplot_Y_1_X_p(4).pdf", replace
+graph export "$filepath/RDplot_Y1_p(4).pdf", replace
 
 *** Using Y2
 rdrobust Y_2 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
-outreg2 using "$filepath/TABLE_2.tex", ctitle(Share of votes under Category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
+
+* --- First-stage (T on X) ---
+scalar coef_fs = e(tau_T_cl)
+scalar se_fs = e(se_tau_T_cl)
+scalar z_fs = coef_fs/se_fs
+
+
+* --- Treatment effect (Y_1 on T) ---
+scalar coef_te = e(tau_cl)  
+scalar se_te = e(se_tau_cl)  
+scalar z_te = coef_te / se_te  
+
+* Rounding (optional)
+foreach s in coef_fs se_fs z_fs coef_te se_te z_te  {
+    scalar `s' = round(`s', 0.00001)
+}
+
+putexcel set "$filepath/fuzzy_Y2_p(1).xlsx", replace
+
+* Write headers
+putexcel A1 = "Estimate" B1 = "Coef" C1 = "SE" D1 = "z"
+
+* First-stage (T on X)
+putexcel A2 = "First stage (T on X)" ///
+          B2 = coef_fs ///
+          C2 = se_fs   ///
+          D2 = z_fs    
+
+* Treatment effect (Y_1 on T)
+putexcel A3 = "Treatment effect (Y_1 on T)" ///
+          B3 = coef_te ///
+          C3 = se_te   ///
+          D3 = z_te
+
 rdplot Y_2 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_2_X_p(1).pdf", replace
+graph export "$filepath/RDplot_Y2_p(1).pdf", replace
+
 
 rdrobust Y_2 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
-outreg2 using "$filepath/TABLE_2.tex", ctitle(Share of votes under Category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
+
+
+* --- First-stage (T on X) ---
+scalar coef_fs = e(tau_T_cl)
+scalar se_fs = e(se_tau_T_cl)
+scalar z_fs = coef_fs/se_fs
+
+
+* --- Treatment effect (Y_1 on T) ---
+scalar coef_te = e(tau_cl)  
+scalar se_te = e(se_tau_cl)  
+scalar z_te = coef_te / se_te  
+
+* Rounding (optional)
+foreach s in coef_fs se_fs z_fs coef_te se_te z_te  {
+    scalar `s' = round(`s', 0.00001)
+}
+
+putexcel set "$filepath/fuzzy_Y2_p(4).xlsx", replace
+
+* Write headers
+putexcel A1 = "Estimate" B1 = "Coef" C1 = "SE" D1 = "z"
+
+* First-stage (T on X)
+putexcel A2 = "First stage (T on X)" ///
+          B2 = coef_fs ///
+          C2 = se_fs   ///
+          D2 = z_fs    
+
+* Treatment effect (Y_1 on T)
+putexcel A3 = "Treatment effect (Y_1 on T)" ///
+          B3 = coef_te ///
+          C3 = se_te   ///
+          D3 = z_te
+		  
 rdplot Y_2 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (Share of votes under Category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_2_X_p(4).pdf", replace
+graph export "$filepath/RDplot_Y2_p(4).pdf", replace
+
 
 *** Using Y3
 rdrobust Y_3 X, fuzzy(T) kernel(triangular) p(1) bwselect(mserd)
-outreg2 using "$filepath/TABLE_3.tex", ctitle(At least one station with category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) replace
+
+
+* --- First-stage (T on X) ---
+scalar coef_fs = e(tau_T_cl)
+scalar se_fs = e(se_tau_T_cl)
+scalar z_fs = coef_fs/se_fs
+
+
+* --- Treatment effect (Y_1 on T) ---
+scalar coef_te = e(tau_cl)  
+scalar se_te = e(se_tau_cl)  
+scalar z_te = coef_te / se_te  
+
+* Rounding (optional)
+foreach s in coef_fs se_fs z_fs coef_te se_te z_te  {
+    scalar `s' = round(`s', 0.00001)
+}
+
+putexcel set "$filepath/fuzzy_Y3_p(1).xlsx", replace
+
+* Write headers
+putexcel A1 = "Estimate" B1 = "Coef" C1 = "SE" D1 = "z"
+
+* First-stage (T on X)
+putexcel A2 = "First stage (T on X)" ///
+          B2 = coef_fs ///
+          C2 = se_fs   ///
+          D2 = z_fs    
+
+* Treatment effect (Y_1 on T)
+putexcel A3 = "Treatment effect (Y_1 on T)" ///
+          B3 = coef_te ///
+          C3 = se_te   ///
+          D3 = z_te
+		  
 rdplot Y_3 X if X> -20 & X< 20, p(1) graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_3_X_p(1).pdf", replace
+graph export "$filepath/RDplot_Y3_p(1).pdf", replace
+
 
 rdrobust Y_3 X, fuzzy(T) kernel(triangular) p(4) bwselect(mserd)
-outreg2 using "$filepath/TABLE_3.tex", ctitle(At least one station with category C fraud) label addstat(Conventional p-value, e(pv_cl), Robust p-value, e(pv_rb), Order Loc. Poly. (p), e(p), Order Bias (q), e(q)) tex(frag) append
+
+
+* --- First-stage (T on X) ---
+scalar coef_fs = e(tau_T_cl)
+scalar se_fs = e(se_tau_T_cl)
+scalar z_fs = coef_fs/se_fs
+
+
+* --- Treatment effect (Y_1 on T) ---
+scalar coef_te = e(tau_cl)  
+scalar se_te = e(se_tau_cl)  
+scalar z_te = coef_te / se_te  
+
+* Rounding (optional)
+foreach s in coef_fs se_fs z_fs coef_te se_te z_te  {
+    scalar `s' = round(`s', 0.00001)
+}
+
+putexcel set "$filepath/fuzzy_Y3_p(4).xlsx", replace
+
+* Write headers
+putexcel A1 = "Estimate" B1 = "Coef" C1 = "SE" D1 = "z"
+
+* First-stage (T on X)
+putexcel A2 = "First stage (T on X)" ///
+          B2 = coef_fs ///
+          C2 = se_fs   ///
+          D2 = z_fs    
+
+* Treatment effect (Y_1 on T)
+putexcel A3 = "Treatment effect (Y_1 on T)" ///
+          B3 = coef_te ///
+          C3 = se_te   ///
+          D3 = z_te
+		  
 rdplot Y_3 X if X> -20 & X< 20, graph_options( ylab(,nogrid) xlab(,nogrid) xtitle("X (distance to coverage boundary )") ytitle("Y (At least one station with category C fraud)")legend(off))
-graph export "$filepath/RDplot_Y_3_X_p(4).pdf", replace
+graph export "$filepath/RDplot_Y3_p(4).pdf", replace
 
 
 /*Which assumptions must hold in order for the one-dimensional RD estimates of Gonzalez (2021) to be valid?
@@ -408,7 +614,7 @@ The key assumptions required for the validity of the one-dimensional RD estimate
 In the context of the Gonzalez (2021) estimates, polling center elevation, slope, and distance to the closest primary road are exceptions to the smooth potential outcomes assumption: this is because cell phone coverage is dependent on geographic features such as changes in elevation and slope and ruggedness of the terrain. In spite of these observed and significant changes of baseline characteristic across the boundary, robustness checks show that the main RD results in obtained in the paper are not sensitive to the inclusion of these covariates
 
 (2) no manipulation: there must be no strategic sorting 
-	- polling stations/ villages cannot have been placed deliberately "just inside" or "just outside" coverage in anticipation of the election. -> the authors 		perform Cattaneo, Jansson, and Ma's (2019) test for breaks in the density of the forcing variable at the boundary and find no evidence of endogenous assignment/sorting near the boundary
+	- polling stations/ villages cannot have been placed deliberately "just inside" or "just outside" coverage in anticipation of the election. -> the authors perform Cattaneo, Jansson, and Ma's (2019) test for breaks in the density of the forcing variable at the boundary and find no evidence of endogenous assignment/sorting near the boundary
 	- since the locaton of the centers was determined entirely by the UN-led IEC, it is unlikely that corrupt candidates were able to manipulate the assignment process
 	
 (3) every neighborhood should offer both treated and control units for comparison​​ (boundary positivity) / the authors restrict the sample to only neighborhoods with at least one polling center on each side of the coverage boundary i.e. they drop any boundary segments with polling centers on only one side of the coverage boundary
@@ -416,6 +622,8 @@ In the context of the Gonzalez (2021) estimates, polling center elevation, slope
 (4) SUTVA/no spillovers 
 
 */
+
+
 
 *(b)*
 /*
@@ -437,54 +645,7 @@ foreach var in comb comb_ind {
 xtset, clear
 xtset segment50 pccode
 
-*we first calculate the point estimates following table_onedim_results
-foreach var in comb_ind comb {	
-	* All regions
-	xtreg vote_`var' cov##c.(dist) if ind_seg50==1 & dist<=hopt_`var', fe robust 
-		est store col1_a_`var'
-
-	* Southeast
-	xtreg vote_`var' cov##c.(dist) if ind_seg50==1 & dist<=hopt_`var'_1 & ///
-	region2==1, fe robust 
-		est store col1_b_`var'
-
-	* Northwest
-	xtreg vote_`var' cov##c.(dist) if ind_seg50==1 & dist<=hopt_`var'_2 & ///
-	region2==2, fe robust 
-		est store col1_c_`var'
- }
-
-**Tabella xtreg
-
-mat results = J(6, 3, .)
-
-* Loop over models
-local i = 1
-foreach est in col1_a_comb col1_b_comb col1_c_comb col1_a_comb_ind col1_b_comb_ind col1_c_comb_ind{
-    est restore `est'
-    mat results[`i', 1] = _b[1.cov]
-    mat results[`i', 2] = _se[1.cov]
-    mat results[`i', 3] = e(N)
-    local i = `i' + 1
-}
-
-* Add valid row/col names
-mat rownames results = Share_all  Share_southeast Share_northwest Atleastone_all Atleastone_southeast Atleastone_northwest
-mat colnames results = Coefficient Std_Err N
-
-* Export to Excel
-putexcel set "$filepath/Table_Results.xlsx", replace
-putexcel A1=matrix(results), names nformat(number_d3)
-
-* Optional formatting
-putexcel A1="Model"
-putexcel (A1:A7), overwr bold border(right thick)
-putexcel (B1:D1), overwr bold border(bottom thick)
-
-* Optional pretty column headers
-putexcel B1="Coefficient" C1="Std. Err."
-
-*we also calculate the point estimates following the IV strategy used in the RDD slides, both using treatment as instrument and interacting it with the X variable.
+*we calculate the point estimates following the IV strategy used in the RDD slides, both using treatment as instrument and interacting it with the X variable.
 *** Local Linear Regression
 gen instrument_T=0
 replace instrument_T=1 if X>0
@@ -528,7 +689,7 @@ mat rownames results = Share_all  Share_southeast Share_northwest Atleastone_all
 mat colnames results = Coefficient Std_Err N
 
 * Export to Excel
-putexcel set "$filepath/Table_Results2.xlsx", replace
+putexcel set "$filepath/Table_Results.xlsx", replace
 putexcel A1=matrix(results), names nformat(number_d3)
 
 * Optional formatting
@@ -576,7 +737,7 @@ mat rownames results = Share_all  Share_southeast Share_northwest Atleastone_all
 mat colnames results = Coefficient Std_Err N
 
 * Export to Excel
-putexcel set "$filepath/Table_Results3.xlsx", replace
+putexcel set "$filepath/Table_Results_interacted.xlsx", replace
 putexcel A1=matrix(results), names nformat(number_d3)
 
 * Optional formatting
@@ -587,22 +748,45 @@ putexcel (B1:D1), overwr bold border(bottom thick)
 * Optional pretty column headers
 putexcel B1="Coefficient" C1="Std. Err."
 
-/* The coefficients linked to the proportions of votes affected by fraud, or the likelihood of fraud in individual polling centers, vary when calculated using optimal bandwidth selection compared to those derived from global fitting. Specifically, our coefficients lose in statistical significance. This decline in significance in the optimal bandwidth estimation can be explained by two main factors: 
-•	Transitioning from a global to a local regression can significantly reduce the number of observations, leading to decreased precision and consequently higher standard errors. This increase in standard errors may diminish the significance of our coefficients.
-•	Bias correction: a narrower bandwidth allows for more precise estimation, helping to avoid the mis-specifications inherent in the global model. This is because in global regressions, extreme observations may bias the overall fit. In this scenario, a coefficient showing no statistical difference from zero may indicate that the actual effect is indeed zero, and it is more precisely computed  using a local estimation method.
 
-These two phenomena are connected to the trade-off between bias and variance in local and global estimation within a regression-discontinuity design. Essentially, narrower bandwidths result in smaller sample sizes, leading to increased variance. However, they also enable more precise estimation of the true effect at the threshold. However, unraveling the effects of these two factors presents a challenge. Consequently, determining whether the difference between local and global outcomes arises from one factor or the other remains elusive.
+/* At least one statition in category C fraud (all): not significant in our regression, contrary to the results in Table 2 of the paper.
 
-Further insights into the results can be offered. Firstly, the significance of our findings is particularly dependent on South-East regions, echoing similar observations made in Gonzalez's study. Additionally, our analysis indicates no noticeable effect of the interaction term. This absence suggests a consistent slope of the outcome variable across covariates, irrespective of the threshold being crossed. */
+At least one statition in category C fraud (southeast): significant at 5%, greater magnitude
 
+At least one statition in category C fraud (northwest): not significant both in our study and in the paper
 
+share of votes under category C fraud (all) : marginally significant in both (10%)
 
+share of votes under category C fraud (southeast): significant at 5% in our regression and at 10% in the paper
 
-
-
-
+share of votes under category C fraud (northwest) : not signifcant in both
 
 
 
+*with interaction
+/* At least one statition in category C fraud (all): not significant in our regression, contrary to the results in Table 2 of the paper.
 
+At least one statition in category C fraud (southeast): not significant in our regression, contrary to the results in Table 2 of the paper.
+
+At least one statition in category C fraud (northwest): not significant both in our study and in the paper
+
+share of votes under category C fraud (all) : marginally significant in both (10%)
+
+share of votes under category C fraud (southeast): significant at 10% both in our regression and in the paper
+
+share of votes under category C fraud (northwest) : not signifcant in both
+
+
+*the results are very similar with and without the interaction term, but they are not completely aligned with the results by Gondalez, likely reflecting differences linked to the use of a proxy for longitude in calculating the X variable. The absence of noticeable effect of the interaction term suggests a consistent slope of the outcome variable across covariates, irrespective of the threshold being crossed.
+
+*bandwidths selected:
+*Outcome: vote_comb.
+*8.677
+*7.066
+*10.445 
+
+*vote_comb_ind
+*7.740
+*7.708 
+*6.329
 
