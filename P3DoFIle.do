@@ -762,22 +762,7 @@ putexcel (B1:D1), overwr bold border(bottom thick)
 putexcel B1="Coefficient" C1="Std. Err."
 
 
-/* At least one statition in category C fraud (all): not significant in our regression, contrary to the results in Table 2 of the paper.
-
-At least one statition in category C fraud (southeast): significant at 5%, greater magnitude
-
-At least one statition in category C fraud (northwest): not significant both in our study and in the paper
-
-share of votes under category C fraud (all) : marginally significant in both (10%)
-
-share of votes under category C fraud (southeast): significant at 5% in our regression and at 10% in the paper
-
-share of votes under category C fraud (northwest) : not signifcant in both
-
-
-
-*with interaction
-/* The results of our analysis are very similar with or without the interaction term, but they are not completely aligned with the results by Gonzalez:
+/* The results of our analysis are very similar with or without the interaction term, but they are not completely aligned with the results by Gonzalez, likely reflecting differences linked to the use of a proxy for longitude in calculating the X variable. :
 when running the Local Linear Regression with only the treatment instrument we note the following differences:
 - the coefficient on "At least one statition in category C fraud (all)" appears not to be significant (-0.111, not significant at any level) in our regression, contrary to the results in Table 2 of the paper (-0.077, 95% significant )
 - the coefficient on "At least one statition in category C fraud (southeast)" appears to be significant at 5% (-0.289, s.e. 0.146) and is of greater magnitude compared to that of the paper (-0.160, 95% significant )
