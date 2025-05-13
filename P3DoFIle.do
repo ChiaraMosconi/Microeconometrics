@@ -794,6 +794,8 @@ when running the Local Linear Regression with the interaction we note the follow
 - the coefficient on "share of votes under category C fraud (southeast)" is significant at 10% both in our regression and in the paper
 - the coefficient on "share of votes under category C fraud (northwest) " is not signifcant in both our regression and in the paper
 
+Since we are using a fuzzy RD, our estimates (with the same bandwidths as under the sharp framework) are worse both in terms of bias and variance. This is due to the fact that the bandwidths we are using are too small to consistently estimate the true coefficients: the fuzzy RD is not precise enough. Therefore we need to change the bandwiths to make them optimal under the fuzzy RD framework. These new bandwiths we find are broader. While it is true that the variance decreases, we lose in significance. Moreover, RD designs strongly relies on the local dimension of the observations (i.e. the nearer they are to the cutoff, the better), therefore, by increasing the bandwiths, we go against this important good practice and we introduce bias.
+
 */
 
 *the results are very similar with and without the interaction term, but they are not completely aligned with the results by Gondalez, likely reflecting differences linked to the use of a proxy for longitude in calculating the X variable. The absence of noticeable effect of the interaction term suggests a consistent slope of the outcome variable across covariates, irrespective of the threshold being crossed.
