@@ -642,6 +642,19 @@ foreach var in comb comb_ind {
 	}
 }
 
+/*
+*bandwidths selected:
+*Outcome: vote_comb.
+*8.677
+*7.066
+*10.445 
+
+*vote_comb_ind
+*7.740
+*7.708 
+*6.329
+*/
+
 xtset, clear
 xtset segment50 pccode
 
@@ -764,29 +777,25 @@ share of votes under category C fraud (northwest) : not signifcant in both
 
 
 *with interaction
-/* At least one statition in category C fraud (all): not significant in our regression, contrary to the results in Table 2 of the paper.
+/* The results of our analysis are very similar with or without the interaction term, but they are not completely aligned with the results by Gonzalez:
+when running the Local Linear Regression with only the treatment instrument we note the following differences:
+- the coefficient on "At least one statition in category C fraud (all)" appears not to be significant (-0.111, not significant at any level) in our regression, contrary to the results in Table 2 of the paper (-0.077, 95% significant )
+- the coefficient on "At least one statition in category C fraud (southeast)" appears to be significant at 5% (-0.289, s.e. 0.146) and is of greater magnitude compared to that of the paper (-0.160, 95% significant )
+- "At least one statition in category C fraud (northwest)": not significant both in our study and in the paper
+- the coefficient on "share of votes under category C fraud (all)" is marginally significant in both (10%)
+- the coefficient on "share of votes under category C fraud (southeast)" is significant at 5% in our regression and at 10% in the paper
+- the coefficient on "share of votes under category C fraud (northwest)" appears not to be signifcant in both
 
-At least one statition in category C fraud (southeast): not significant in our regression, contrary to the results in Table 2 of the paper.
+when running the Local Linear Regression with the interaction we note the following differences:
+- the coefficient on "At least one statition in category C fraud (all)" is  not significant in our regression, contrary to the results in Table 2 of the paper.
+- the coefficient on "At least one statition in category C fraud (southeast)" is not significant in our regression, contrary to the results in Table 2 of the paper.
+- the coefficient At least one statition in category C fraud (northwest) appears not to be significant both in our study and in the paper
+- the coefficient on "share of votes under category C fraud (all)" is marginally significant (10%) in both our regression and the paper
+- the coefficient on "share of votes under category C fraud (southeast)" is significant at 10% both in our regression and in the paper
+- the coefficient on "share of votes under category C fraud (northwest) " is not signifcant in both our regression and in the paper
 
-At least one statition in category C fraud (northwest): not significant both in our study and in the paper
-
-share of votes under category C fraud (all) : marginally significant in both (10%)
-
-share of votes under category C fraud (southeast): significant at 10% both in our regression and in the paper
-
-share of votes under category C fraud (northwest) : not signifcant in both
-
+*/
 
 *the results are very similar with and without the interaction term, but they are not completely aligned with the results by Gondalez, likely reflecting differences linked to the use of a proxy for longitude in calculating the X variable. The absence of noticeable effect of the interaction term suggests a consistent slope of the outcome variable across covariates, irrespective of the threshold being crossed.
 
-*bandwidths selected:
-*Outcome: vote_comb.
-*8.677
-*7.066
-*10.445 
-
-*vote_comb_ind
-*7.740
-*7.708 
-*6.329
 
